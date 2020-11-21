@@ -156,7 +156,7 @@ if (!class_exists("UserJournals")) {
          }
          $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
                 
-         if ($count = $sql->gen("SELECT  distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true)) {
+         if ($count = $sql->gen("SELECT  distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit )) {
           
             while($uj_blog = $sql->fetch()) {
                $text .= $tp->parseTemplate($UJ_BLOGGERS_LIST, FALSE, $userjournals_shortcodes);
