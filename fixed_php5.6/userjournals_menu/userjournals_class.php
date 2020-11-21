@@ -1,4 +1,6 @@
 <?php
+
+ 
 if (!class_exists("UserJournals")) {
    include_lan(e_PLUGIN."userjournals_menu/languages/English.php");
    include_lan(e_LANGUAGEDIR."English/lan_user.php");
@@ -18,7 +20,7 @@ if (!class_exists("UserJournals")) {
       var $user;
 
       function UserJournals($mainpage=false) {
-         global $sql;
+         global $sql, $ns;
          $this->mood = array(
             //''           => UJ68,
             'happy'      => UJ69,
@@ -138,22 +140,25 @@ if (!class_exists("UserJournals")) {
                }
             }
 
-            $ns = new e107table();
+            //$ns = new e107table();          
+           // print_a($page[0]);            
             $ns->tablerender($page[0], $page[1]);
          }
       }
 
       function DefaultPage($start=0) {
-         global $pref, $tp, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
-
+         global $pref, $sql, $tp, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
+ 
          $sql = new db();
          $text = "";
          if ($pref["userjournals_bloggers_per_page"]) {
             $limit = " limit $start,".$pref["userjournals_bloggers_per_page"];
          }
          $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
-         if ($count = $sql->db_Select("userjournals", "distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp", $qry.$limit)) {
-            while($uj_blog = $sql->db_Fetch()) {
+                
+         if ($count = $sql->gen("SELECT  distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true)) {
+          
+            while($uj_blog = $sql->fetch()) {
                $text .= $tp->parseTemplate($UJ_BLOGGERS_LIST, FALSE, $userjournals_shortcodes);
             }
          } else {
@@ -162,10 +167,10 @@ if (!class_exists("UserJournals")) {
 
          if ($pref["userjournals_bloggers_per_page"]) {
             $count = $sql->db_Select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", $qry);
-            include_once(e_HANDLER."np_class.php");
+            include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
             $text .= $np->nextprev(e_SELF, $start, $pref["userjournals_bloggers_per_page"], $count, "", "bloggers", true);
-         }           
+         }
          return array(UJ43, $text);
       }
 
@@ -201,9 +206,8 @@ if (!class_exists("UserJournals")) {
 
          if ($pref["userjournals_blogs_per_page"]) {
             $count = $sql->db_Select("userjournals", "*", $qry);
-            include_once(e_HANDLER."np_class.php");
+            include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
-                           
             $text .= $np->nextprev(e_SELF, $start, $pref["userjournals_blogs_per_page"], $count, "", "blogger.$bloggerid", true);
          }
          return array($caption, $text);
@@ -214,7 +218,7 @@ if (!class_exists("UserJournals")) {
 
          if ($sql->db_Select("userjournals", "*", "userjournals_id=$blogid")){
             $text = "";
-            if ($row = $sql->db_Fetch()){
+            if ($row = $sql->fetch()){
                $text .= $this->GetBlog($row);
             } else {
                $text = $this->Message(UJ28);
@@ -252,7 +256,7 @@ if (!class_exists("UserJournals")) {
 
          if ($pref["userjournals_blogs_per_page"]) {
             $count = $sql->db_Select("userjournals", "*", $qry);
-            include_once(e_HANDLER."np_class.php");
+            include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
             $text .= $np->nextprev(e_SELF, $start, $pref["userjournals_blogs_per_page"], $count, "", "allblogs", true);
          }
@@ -264,7 +268,7 @@ if (!class_exists("UserJournals")) {
 
          $uj_blog = $blog;
          $uj_categories = $this->cats;
-         if ($limit) {
+         if ($limit) {          
             $text = $tp->parseTemplate($UJ_BLOG_SHORT, FALSE, $userjournals_shortcodes);
          } else {
             $text = $tp->parseTemplate($UJ_BLOG, FALSE, $userjournals_shortcodes);
@@ -274,8 +278,8 @@ if (!class_exists("UserJournals")) {
 
       function BlogAddEdit($blogid=false) {
          global $e107Helper, $pref, $sql;
-
-         if (check_class($pref["userjournals_writers"])) {
+                  
+         if (check_class($pref["userjournals_writers"])) {            
             $text = "<form action='".e_SELF."?save' method='post'>";
             if ($blogid) {
                if ($sql->db_Select("userjournals", "*", "userjournals_id=$blogid")){
@@ -303,8 +307,8 @@ if (!class_exists("UserJournals")) {
                $userjournals_categories = explode(",", $userjournals_categories);
                $text .= "<tr><td class='forumheader3'>".UJ91."</td>";
                $text .= "<td class='forumheader3'><div class='search-checkboxes'>";
-               if ($sql->db_Select("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", false)) {
-                  while ($row = $sql->db_Fetch()) {
+               if ($sql->select("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", false)) {
+                  while ($row = $sql->fetch()) {
                      extract($row);
                      $checked = in_array($userjournals_cat_id, $userjournals_categories) ? " checked='checked'" : "";
                      $text .= "<span class='search-checkbox'><input type='checkbox' class='tbox' name='journal_cat[$userjournals_cat_id]' value='$userjournals_cat_id'$checked/>$userjournals_cat_name</span>";
@@ -342,7 +346,7 @@ if (!class_exists("UserJournals")) {
                $text .= "<input type='submit' class='button' value='".UJ2."' name='save'/> ";
             }
             $text .= "<input type='button' class='button' value='".UJ3."' name='cancel' onclick='window.history.back()'/>";
-            $text .= "</td></tr></table></form>";
+            $text .= "</td></tr></table></form>";   
          } else {
             $text = $this->Message(UJ17);
          }
