@@ -56,7 +56,7 @@ if (!class_exists("UserJournals")) {
 
          // Only process URL parameters if this is a main page (i.e. not a menu)
          if ($mainpage) {
-            $qs   = explode(".", urldecode($_SERVER['QUERY_STRING']));
+            $qs   = explode(".", e_QUERY);
             if (is_numeric($qs[0])) {
                // Switch params round if 1st is numeric - e107 Next/Prev class inisists on "page number" as 1st URL parameter
                $temp = array_shift($qs);
@@ -66,7 +66,7 @@ if (!class_exists("UserJournals")) {
             $ujop = varset($qs[0], "bloggers");
             $ujp1 = varset(intval($qs[1]), 0);
             $ujp2 = varset(intval($qs[2]), 0);
-
+                              
             switch ($ujop) {
                case "blogger" : {
                   //$user = getx_user_data($ujp1);
@@ -215,7 +215,7 @@ if (!class_exists("UserJournals")) {
 
       function BlogPage($blogid) {
          global $pref, $sql;
-
+                             
          if ($sql->db_Select("userjournals", "*", "userjournals_id=$blogid")){
             $text = "";
             if ($row = $sql->fetch()){
