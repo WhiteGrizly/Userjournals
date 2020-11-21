@@ -343,13 +343,13 @@ class e107Helper {
       if ($ratearray = $rater->getrating($pluginid, $id)) {
          $text .= "<table cellpadding='0' cellspacing='0' style='display:inline'><tr>";
          for ($i=1; $i<11; $i++) {
-            if ($i <= $ratearray[1]) {
-               $text .= "<td><img src='".THEME."images/star_rating_selected.gif' alt='Rate star $i'/></td>";
+            if ($i <= $ratearray[1]) {                                            
+               $text .= "<td><img src='".e_WEB."js/rate/img/star-on.png' alt='Rate star $i'/></td>";
             } elseif ($i <= $ratearray[1]+1 && $ratearray[2]) {
                $divwidth = ceil($starwidth * ($ratearray[2]/10));
-               $text .= "<td><div style='width:{$divwidth}px;overflow:hidden'><img src='".THEME."images/star_rating_selected.gif' alt='Rate star $i.".$ratearray[2]."'/></div></td>";
+               $text .= "<td><div style='width:{$divwidth}px;overflow:hidden'><img src='".e_WEB."js/rate/img/star-on.png' alt='Rate star $i.".$ratearray[2]."'/></div></td>";
             } elseif ($allstars) {
-               $text .= "<td><img src='".THEME."images/star_rating.gif' alt='Rate star $i'/></td>";
+               $text .= "<td><img src='".e_WEB."js/rate/img/star-off.png' alt='Rate star $i'/></td>";
             }
          }
          if (!$notext) {
@@ -376,7 +376,7 @@ class e107Helper {
                $events = " onmouseout='e107Helper.rateStars(\"".THEME."images\", \"$prefix\", $i, 0);'";
                $events .= " onmouseover='e107Helper.rateStars(\"".THEME."images\", \"$prefix\", $i, 1);'";
                $events .= " onclick='e107HelperAjax.rate(\"".e_PLUGIN."e107helpers/e107HelperAjax.php\", \"{$url}^{$i}\", \"$divid\", \"$pluginid\", \"$id\", \"$allowrating\", \"$notext\", \"$allstars\", {$i})'";
-               $text .= "<img src='".THEME."images/star_rating.gif' id='$prefix{$i}' $onclick $events style='$style' alt='Rate this $i' title='Rate this $i'/>";
+               $text .= "<img src='".e_WEB."js/rate/img/star-off.png' id='$prefix{$i}' $onclick $events style='$style' alt='Rate this $i' title='Rate this $i'/>";
             }
          } elseif (USER && !$notext) {
             $text .= HELPER_RATELAN_3;
