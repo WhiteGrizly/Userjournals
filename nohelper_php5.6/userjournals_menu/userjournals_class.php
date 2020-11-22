@@ -56,8 +56,8 @@ if (!class_exists("UserJournals")) {
          $this->user = false;
 
          // Get all categories - we need these all ove rthe place
-         if ($sql->db_Select("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", false)) {
-            while ($row = $sql->db_Fetch()) {
+         if ($sql->select("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", false)) {
+            while ($row = $sql->fetch()) {
                $this->cats[$row["userjournals_cat_id"]] = $row;
             }
          }
@@ -74,7 +74,7 @@ if (!class_exists("UserJournals")) {
             $ujop = varset($qs[0], "bloggers");
             $ujp1 = varset(intval($qs[1]), 0);
             $ujp2 = varset(intval($qs[2]), 0);
-                              
+                        
             switch ($ujop) {
                case "blogger" : {
                   //$user = getx_user_data($ujp1);
@@ -154,58 +154,67 @@ if (!class_exists("UserJournals")) {
          }
       }
 
-      function DefaultPage($start=0) {
+      function DefaultPage($start=1) {
          global $plugPrefs, $sql, $tp, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
  
          $sql = new db();
-         $text = "";
+		 $text = "";
+
+		 $start = $start ? $start - 1 : 0;
+
          if ($plugPrefs["userjournals_bloggers_per_page"]) {
-            $limit = " limit $start,".$plugPrefs["userjournals_bloggers_per_page"];
+			$start = $start *  $plugPrefs["userjournals_bloggers_per_page"];
+            $limit = " limit $start ,".$plugPrefs["userjournals_bloggers_per_page"];
          }
          $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
-                
-         if ($count = $sql->gen("SELECT  distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit )) {
-          
+              
+         if ($count = $sql->gen("SELECT distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true )) {
+             
             while($uj_blog = $sql->fetch()) {
                $text .= $tp->parseTemplate($UJ_BLOGGERS_LIST, FALSE, $userjournals_shortcodes);
             }
          } else {
             $text = UJ44;
-         }
-
+		 }
+		 
+		   
          if ($plugPrefs["userjournals_bloggers_per_page"]) {
-            $count = $sql->db_Select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", $qry);
+			$count = $sql->select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", $qry );
+			 
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
-            $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_bloggers_per_page"], $count, "", "bloggers", true);
-         }
+			$text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_bloggers_per_page"], $count, "", "bloggers", true);
+			 
+		 }
+		  
          return array(UJ43, $text);
       }
 
-      function BloggerPage($bloggerid, $bloggername, $start=0, $msg=false) {
+      function BloggerPage($bloggerid, $bloggername, $start=1, $msg=false) {
          global  $plugPrefs, $sql, $tp, $uj_message, $uj_synopsis, $userjournals_shortcodes, $UJ_MESSAGE, $UJ_BLOGGER_SYNOPSIS;
 
          $caption = $plugPrefs["userjournals_page_title"].UJ25.$bloggername;
          $text = "";
-         if ($sql->db_Select("userjournals", "userjournals_userid, userjournals_entry", "userjournals_is_blog_desc=1 AND userjournals_userid=".$bloggerid)) {
-            if ($uj_synopsis = $sql->db_Fetch()) {
+         if ($sql->select("userjournals", "userjournals_userid, userjournals_entry", "userjournals_is_blog_desc=1 AND userjournals_userid=".$bloggerid)) {
+            if ($uj_synopsis = $sql->fetch()) {
                //$user = getx_user_data($bloggerid);
                $user = e107::user($bloggerid);
                $text .= $tp->parseTemplate($UJ_BLOGGER_SYNOPSIS, TRUE, $userjournals_shortcodes);
             }
          }
-
-         $start = $start ? $start : 0;
+		 
+         $start = $start ? $start - 1 : 0;
          if ($plugPrefs["userjournals_blogs_per_page"]) {
+			$start = $start * $plugPrefs["userjournals_blogs_per_page"];
             $limit = " limit $start,".$plugPrefs["userjournals_blogs_per_page"];
-         }
+         }  
          $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 AND userjournals_userid=$bloggerid order by userjournals_timestamp DESC";
-         if ($sql->db_Select("userjournals", "*", $qry.$limit)){
-            while ($row = $sql->db_Fetch()){
+         if ($sql->select("userjournals", "*", $qry.$limit)){
+            while ($row = $sql->fetch()){
                $text .= $this->GetBlog($row, $plugPrefs["userjournals_len_preview"]);
             }
          } else {
-            $text = $this->Message('xxxxx'.UJ28);
+            $text = $this->Message('208'.UJ28);
          }
 
          if ($msg) {
@@ -213,7 +222,7 @@ if (!class_exists("UserJournals")) {
          }
 
          if ($plugPrefs["userjournals_blogs_per_page"]) {
-            $count = $sql->db_Select("userjournals", "*", $qry);
+            $count = $sql->select("userjournals", "*", $qry);
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
             $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "blogger.$bloggerid", true);
@@ -224,7 +233,7 @@ if (!class_exists("UserJournals")) {
       function BlogPage($blogid) {
          global $plugPrefs, $sql;
                              
-         if ($sql->db_Select("userjournals", "*", "userjournals_id=$blogid")){
+         if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
             $text = "";
             if ($row = $sql->fetch()){
                $text .= $this->GetBlog($row);
@@ -241,33 +250,36 @@ if (!class_exists("UserJournals")) {
          return array($caption, $text);
       }
 
-      function AllBlogsPage($start) {
+      function AllBlogsPage($start = 1 ) {
          global $plugPrefs, $sql;
          $caption = $plugPrefs["userjournals_page_title"];
 
+		 $start = $start ? $start - 1 : 0;
          if ($plugPrefs["userjournals_blogs_per_page"]) {
+			$start =  $start * $plugPrefs["userjournals_blogs_per_page"];
             $limit = " limit $start,".$plugPrefs["userjournals_blogs_per_page"];
          }      
-            
-         $qry = "userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC";
-         if ($sql->db_Select("userjournals", "*", $qry.$limit, true)){
+         
+         $qry = "WHERE userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC";
+         if ($sql->select("userjournals", "*", $qry.$limit, true)){
             $text = "";
-            if ($row = $sql->db_Fetch()){
+            if ($row = $sql->fetch()){
                do {
                   $text .= $this->GetBlog($row, $plugPrefs["userjournals_len_preview"])."<br/>";
-               } while ($row = $sql->db_Fetch());
+               } while ($row = $sql->fetch());
             } else {
                $text = $this->Message("259".UJ28);
             }
          } else {
-            $text = $this->Message(UJ28);
+            $text = $this->Message("263".UJ28);
          }
 
          if ($plugPrefs["userjournals_blogs_per_page"]) {
-            $count = $sql->db_Select("userjournals", "*", $qry);
+            $count = $sql->select("userjournals", "*", $qry, true);
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
             $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "allblogs", true);
+ 
          }
          return array($caption, $text);
       }
@@ -294,8 +306,8 @@ if (!class_exists("UserJournals")) {
          if (check_class($plugPrefs["userjournals_writers"])) {            
             $text = "<form action='".e_SELF."?save' method='post'>";
             if ($blogid) {
-               if ($sql->db_Select("userjournals", "*", "userjournals_id=$blogid")){
-                  if ($result = $sql->db_Fetch()){
+               if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
+                  if ($result = $sql->fetch()){
                      extract($result);
                      $text = "<form action='".e_SELF."?update.$blogid' method='post'>";
                   }
@@ -412,8 +424,8 @@ if (!class_exists("UserJournals")) {
          // Only allow blog writers to update entries
          if (check_class($plugPrefs["userjournals_writers"])) {
             // Make sure user is only updating their own entries
-            if ($sql->db_Select("userjournals", "*", "userjournals_id=$blogid")){
-               if ($result = $sql->db_Fetch()){
+            if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
+               if ($result = $sql->fetch()){
                   extract($result);
                   if ($userjournals_userid != USERID) {
                      return $this->BloggerPage(USERID, USERNAME, 0, $this->Message(UJ17));
@@ -461,8 +473,8 @@ if (!class_exists("UserJournals")) {
          // Only allow blog writers to delete entries
          if (check_class($plugPrefs["userjournals_writers"]) || ADMIN) {
             // Make sure user is only deleting their own entries
-            if ($sql->db_Select("userjournals", "*", "userjournals_id=$blogid")){
-               if ($result = $sql->db_Fetch()){
+            if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
+               if ($result = $sql->fetch()){
                   extract($result);
                   if ($userjournals_userid != USERID && !ADMIN) {
                      return $this->BloggerPage(USERID, USERNAME, 0, $this->Message(UJ17));
@@ -489,8 +501,8 @@ if (!class_exists("UserJournals")) {
          if (check_class($plugPrefs["userjournals_writers"])) {
             $text = "<form action='".e_SELF."?synopsissave' method='post'>";
 
-            if ($sql->db_Select("userjournals", "*", "userjournals_userid=".USERID." and userjournals_is_blog_desc='1'")){
-               if ($row = $sql->db_Fetch()){
+            if ($sql->select("userjournals", "*", "userjournals_userid=".USERID." and userjournals_is_blog_desc='1'")){
+               if ($row = $sql->fetch()){
                   extract($row);
                   $text = "<form action='".e_SELF."?synopsisupdate.".USERID."' method='post'>";
                }
@@ -723,9 +735,9 @@ if (!class_exists("UserJournals")) {
          $caption = $plugPrefs["userjournals_page_title"].UJ95.$this->cats[$catid]["userjournals_cat_name"];
          $cats_sql = "AND userjournals_categories='$catid' or userjournals_categories regexp '^$catid,' or userjournals_categories regexp ',$catid,' or userjournals_categories regexp ',$catid'";
 
-         if ($sql->db_Select("userjournals", "*", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 $cats_sql ORDER BY userjournals_timestamp DESC")){
+         if ($sql->select("userjournals", "*", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 $cats_sql ORDER BY userjournals_timestamp DESC")){
             $text = "";
-            while ($row = $sql->db_Fetch()){
+            while ($row = $sql->fetch()){
                $text .= $this->GetBlog($row, $plugPrefs["userjournals_len_preview"])."<br/>";
             }
          } else {

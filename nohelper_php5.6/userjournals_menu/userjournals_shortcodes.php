@@ -72,9 +72,9 @@ SC_END
 
 SC_BEGIN UJ_BLOG_MOOD
    global $uj_blog;
-   $text = "";
+   $text = "";                                     
    if (strlen($uj_blog["userjournals_mood"]) > 0) {
-      $text = "<img src='".e_PLUGIN."userjournals_menu/images/".$uj_blog["userjournals_mood"].".gif' alt='*'/>";
+      $text = "<img src='".e_PLUGIN_ABS."userjournals_menu/images/".$uj_blog["userjournals_mood"].".gif' alt='*'/>";
    }
    return $text;
 SC_END
@@ -166,15 +166,15 @@ SC_END
 
 SC_BEGIN UJ_BLOG_ENTRY
    global $e107Helper, $uj_blog;
-   $text = $e107Helper->tp_toHTML($uj_blog["userjournals_entry"], true);
+   $text = e107::getParser()->toHTML($uj_blog["userjournals_entry"], TRUE, 'DESCRIPTION');
    return $text;
 SC_END
 
 SC_BEGIN UJ_BLOG_ENTRY_SHORT
-   global $e107Helper, $pref, $tp, $uj_blog;
-   $text = $e107Helper->tp_toHTML($uj_blog["userjournals_entry"], true);
+   global $plugPrefs, $tp, $uj_blog;
+   $text = e107::getParser()->toHTML($uj_blog["userjournals_entry"], TRUE, 'DESCRIPTION');
    // use this when e107 helkpers 0.7+ released $userjournals_entry = $e107Helper->tp_toHTML($userjournals_entry, true, $limit, "");
-   $text = $tp->html_truncate($text, $plugPrefs["userjournals_len_preview"], "...");
+   $text = e107::getParser()->html_truncate($text, $plugPrefs["userjournals_len_preview"], "...");
    return $text;
 SC_END
 
@@ -191,20 +191,23 @@ SC_BEGIN UJ_BLOG_COMMENTS
    global $e107Helper, $plugPrefs, $uj_blog;
    $text = "";
    if (check_class($plugPrefs["userjournals_allowcomments"])) {
-      $text .= $e107Helper->getComment("userjourna", $uj_blog["userjournals_id"]);
+	   $title = e107::getParser()->post_toHTML($uj_blog["userjournals_entry"], true); //has to be unique todo fix this
+	   //function compose_comment($table, $action, $id, $width, $subject, $rate = FALSE, $return = FALSE, $tablerender = TRUE)
+      $text .= e107::getComment()->compose_comment('userjourna', 'comment', $uj_blog["userjournals_id"], null, $title, false, 'html');
    }
    return $text;
 SC_END
 
 SC_BEGIN UJ_BLOG_COMMENTS_TOTAL
    global $e107Helper, $plugPrefs, $uj_blog;
-   $text = "";
+   $text = "";  print_a('xxx' );
    parse_str($parm, $parms);
    if (array_key_exists("label", $parms)) {
-      $text .= UJ30." ";
+      $text .= UJ30." ";  
    }
+   print_a($text);
    if (check_class($plugPrefs["userjournals_allowcomments"])) {
-      $text .= $e107Helper->getCommentTotal("userjourna", $uj_blog["userjournals_id"]);
+       $text .= e107::getComment()->count_comments('userjourna', $uj_blog["userjournals_id"]);
    }
    return $text;
 SC_END
@@ -305,15 +308,15 @@ SC_BEGIN UJ_RSS
 SC_END
 
 SC_BEGIN UJ_RSS_1
-   return "<a href='".e_PLUGIN."rss_menu/rss.php?userjournals.1'><img src='".e_PLUGIN."rss_menu/images/rss1.png' alt='rss1'/></a>";
+   return "<a href='".e_PLUGIN."rss_menu/rss.php?userjournals.1'><img src='".e_PLUGIN_ABS."rss_menu/images/rss1.png' alt='rss1'/></a>";
 SC_END
 
 SC_BEGIN UJ_RSS_2
-   return "<a href='".e_PLUGIN."rss_menu/rss.php?userjournals.2'><img src='".e_PLUGIN."rss_menu/images/rss2.png' alt='rss2'/></a>";
+   return "<a href='".e_PLUGIN."rss_menu/rss.php?userjournals.2'><img src='".e_PLUGIN_ABS."rss_menu/images/rss2.png' alt='rss2'/></a>";
 SC_END
 
 SC_BEGIN UJ_RSS_3
-   return "<a href='".e_PLUGIN."rss_menu/rss.php?userjournals.3'><img src='".e_PLUGIN."rss_menu/images/rss3.png' alt='rdf'/></a>";
+   return "<a href='".e_PLUGIN."rss_menu/rss.php?userjournals.3'><img src='".e_PLUGIN_ABS."rss_menu/images/rss3.png' alt='rdf'/></a>";
 SC_END
 
 SC_BEGIN UJ_MENU_WRITER_OPTIONS

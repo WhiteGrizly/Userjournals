@@ -39,31 +39,34 @@ class nextprev {
 	 * @param bool $return, Output onto page or return the links
 	 * @return nextprev string
 	 */
+     
+     /* change for 2.3:  page number is the same as number in url - start for limit clausule you get by page * view */
+      
 	function nextprev($url, $from, $view, $total, $td, $qs = "", $return = false) {
 		if ($total > $view) {
-			$pages = ceil($total / $view);
+			$pages = ceil($total / $view) ;
 		} else {
 			$pages = FALSE;
 		}
-
+ 
 		if ($pages) {
-			$nppage = NP_3." ";
+			$nppage = LAN_GOPAGE." ";
 			if ($pages > 10) {
 				$current = ($from/$view)+1;
-
+                                         
 				for($c = 0; $c <= 2; $c++) {
-					$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c + 1)."</span>] " : "<a href='{$url}?".($view * $c).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
+					$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c + 1)."</span>] " : "<a href='{$url}?".($c + 1).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
 				}
 
 				if ($current >= 3 && $current <= 5) {
 					for($c = 3; $c <= $current; $c++) {
-						$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c+1)."</span>] " : "<a href='{$url}?".($view * $c).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
+						$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c+1)."</span>] " : "<a href='{$url}?".($c + 1).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
 					}
 				}
 				else if($current >= 6 && $current <= ($pages-5)) {
 					$nppage .= " ... ";
 					for($c = ($current-2); $c <= $current; $c++) {
-						$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c+1)."</span>] " : "<a href='{$url}?".($view * $c).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
+						$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c+1)."</span>] " : "<a href='{$url}?".($c + 1).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
 					}
 				}
 				$nppage .= " ... ";
@@ -76,12 +79,12 @@ class nextprev {
 				}
 
 				for($c = $tmp; $c <= ($pages-1); $c++) {
-					$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c + 1)."</span>] " : "<a href='{$url}?".($view * $c).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
+					$nppage .= ($view * $c == $from ? "[<span style='text-decoration:underline'>".($c + 1)."</span>] " : "<a href='{$url}?".(($c + 1)).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
 				}
 
 			} else {
 				for($c = 0; $c < $pages; $c++) {
-					if ($view * $c == $from ? $nppage .= "[<span style='text-decoration:underline'>".($c + 1)."</span>] " : $nppage .= "<a href='{$url}?".($view * $c).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
+					if ($view * $c == $from ? $nppage .= "[<span style='text-decoration:underline'>".($c + 1)."</span>] " : $nppage .= "<a href='{$url}?".(($c + 1)).($qs ? ".{$qs}" : "")."'>".($c + 1)."</a> ");
 				}
 			}
 			$text = "<div style='text-align:right'><div class='nextprev'><span class='smalltext'>{$nppage}</span></div></div>\n<br /><br />\n";
