@@ -72,7 +72,7 @@ class leftmenu_adminArea extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
 		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
 	
-		'main/prefs' 		=> array('caption'=> LAN_PREFS, 'perm' => 'P'),	
+		'main/prefs' 		=> array('caption'=> LAN_JOURNAL_MENU_00, 'perm' => 'P'),	
 
 		// 'main/div0'      => array('divider'=> true),
 		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P'),

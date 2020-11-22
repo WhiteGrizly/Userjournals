@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<e107HelperForm version="1.0">
+
+   <form name="userjournals_prefs_form" type="HELPER_FORM_TYPE_E107_PREF">
+ 
+  
+/// unfinished
+      <list name="userjournals_template" label="JOURNAL_A30" prompt="JOURNAL_A30_P" class="tbox">
+         <default var="e107pref"/>
+         <listcallback class='UserJournals'>getTemplates</listcallback>
+         <includeBlank>true</includeBlank>
+      </list>
+
+       
+
+ 
+
+   </form>
+
+</e107HelperForm>

@@ -1,4 +1,37 @@
 <?php
+
+/*
+* e107 website system
+*
+* Copyright (C) 2008-2013 e107 Inc (e107.org)
+* Released under the terms and conditions of the
+* GNU General Public License (http://www.gnu.org/licenses/gpl.txt)
+*
+* e107 Userjournals Plugin
+*
+* #######################################
+* #     e107 website system plugin      #
+* #     by Jimako                    	 #
+* #     https://www.e107sk.com          #
+* #######################################
+*/ 
+
+/*
++---------------------------------------------------------------+
+|        UserJournals plugin for e107 website system
+|
+|        ©Del Rudolph 2003
+|        http://www.downinit.com/
+|        del@downinit.com
+|
+|        Released under the terms and conditions of the
+|        GNU General Public License (http://gnu.org).
++---------------------------------------------------------------+
+
+$eplug_author        = "Del Rudolph, SKiTZ716, bkwon, bugrain";
+
+*/
+
 define("JOURNAL_VERSION","1.1"); // Do not change this unless you really are updating the plugin
 
 define("LAN_JOURNAL_A0",    	"UserJournals");
@@ -72,7 +105,7 @@ define("JOURNAL_A34_1", "Log to Admin Log database table");
 define("JOURNAL_A34_2", "E-Mail site admin");
 define("JOURNAL_A34_3", "Log to admin Log and E-Mail site admin");
 
-define("JOURNAL_MENU_00",  "Preferences");
+define("LAN_JOURNAL_MENU_00",  "Preferences");
 define("JOURNAL_MENU_01",  "Categories");
 define("JOURNAL_MENU_98",  "Convert comments");
 define("JOURNAL_MENU_99",  "Read Me");

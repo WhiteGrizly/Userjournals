@@ -3,4 +3,6 @@
 
  * move language folder to subdirectory
 
+ * scan plugin directory to get setup working
  
+ * run update process from e107 admin area to fix preferences

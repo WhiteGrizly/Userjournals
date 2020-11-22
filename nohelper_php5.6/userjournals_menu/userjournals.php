@@ -6,15 +6,17 @@
    require_once("../../class2.php");
    $WYSIWYG = $pref['wysiwyg'];
    $e_wysiwyg = "journal_entry";
-
+   
+   $plugPrefs = e107::getPlugPref('userjournals_menu');
+         
    // If UJ not active don't display anything at all
-   if ($pref['userjournals_active'] != '1'){
+   if (e107::pref('userjournals_menu', 'userjournals_active') != '1'){        
       header("location:../../index.php");
       exit;
    }
 
    // Check that the viewing journals is allowed
-   if (!check_class($pref["userjournals_readers"]) && (!check_class($pref["userjournals_writers"]))) {
+   if (!check_class(e107::pref('userjournals_menu', 'userjournals_readers') ) && !check_class(e107::pref('userjournals_menu', 'userjournals_writers') ) ) {
       header("location:../../index.php");
       exit;
    }

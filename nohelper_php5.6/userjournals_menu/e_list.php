@@ -3,9 +3,7 @@
 	   // Plugin not installed
 		return;
 	}
-
-   global $pref;
-
+ 
 	$LIST_CAPTION        = $arr[0];
 	$LIST_DISPLAYSTYLE   = ($arr[2] ? "" : "none");
 

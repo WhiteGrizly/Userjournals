@@ -29,7 +29,7 @@
    $e107HelperForm->processForm(true, true);
    $text .= $e107HelperForm->getFormHTML();
 
-   $ns -> tablerender(JOURNAL_MENU_00, $text);
+   $ns -> tablerender(JOURNAL_MENU_01, $text);
 
    require_once(e_ADMIN."footer.php");
 ?>

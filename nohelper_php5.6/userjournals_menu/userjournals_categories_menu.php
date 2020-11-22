@@ -6,7 +6,7 @@
    }
 
    // If UJ not active don't display anything at all
-   if($pref["userjournals_active"] == "1"){
+   if(e107::pref('userjournals_menu', 'userjournals_active') == "1"){
       $GLOBALS['userJournals']->GetCategoriesMenu($ns);
    }
 ?>

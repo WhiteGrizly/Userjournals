@@ -3,12 +3,7 @@
 +---------------------------------------------------------------+
 +---------------------------------------------------------------+
 */
-   $menutitle  = LAN_JOURNAL_A0;
-
-   $butname[]  = JOURNAL_MENU_00;
-   $butlink[]  = "admin_conf.php";
-   $butid[]    = JOURNAL_MENU_00;
-
+ 
    $butname[]  = JOURNAL_MENU_01;
    $butlink[]  = "admin_categories.php";
    $butid[]    = JOURNAL_MENU_01;

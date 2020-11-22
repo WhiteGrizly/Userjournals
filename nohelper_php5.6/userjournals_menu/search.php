@@ -3,14 +3,16 @@
 $text .= ujSearch();
 
 function ujSearch() {
-   global $search_info, $key, $pref, $query;
+   global $search_info, $key, $query;
    $sql = new db();
    $gen2 = new convert;
+   
+   $plugPrefs = e107::getPlugConfig('userjournals_menu');
 
    $nothingfound = true;
    $linkprefix = "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"".e_PLUGIN."userjournals_menu/userjournals.php?";
 
-   $search_info[$key]['qtype'] = $pref["userjournals_page_title"];
+   $search_info[$key]['qtype'] = $plugPrefs["userjournals_page_title"];
 
    if ($sql->db_Select("userjournals", "*", "(userjournals_subject REGEXP('".$query."') OR userjournals_entry REGEXP('".$query."')) AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC")) {
       $nothingfound = false;

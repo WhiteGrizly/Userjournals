@@ -17,7 +17,7 @@ require_once 'admin_leftmenu.php';
 class userjournals_ui extends e_admin_ui
 {
 			
-		protected $pluginTitle		= 'UserJournals';
+		protected $pluginTitle		= LAN_JOURNAL_A0;
 		protected $pluginName		= 'userjournals_menu';
 	//	protected $eventName		= 'userjournals_menu-userjournals'; // remove comment to enable event triggers in admin. 		
 		protected $table			= 'userjournals';
@@ -60,40 +60,58 @@ class userjournals_ui extends e_admin_ui
 
 	//	protected $preftabs        = array('General', 'Other' );
 		protected $prefs = array(
-			'userjournals_active'		=> array('title'=> 'Userjournals_active', 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_page_title'		=> array('title'=> 'Userjournals_page_title', 'tab'=>0, 'type'=>'text', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_menu_title'		=> array('title'=> 'Userjournals_menu_title', 'tab'=>0, 'type'=>'text', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_cat_menu_title'		=> array('title'=> 'Userjournals_cat_menu_title', 'tab'=>0, 'type'=>'text', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_writers'		=> array('title'=> 'Userjournals_writers', 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_readers'		=> array('title'=> 'Userjournals_readers', 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_allowcomments'		=> array('title'=> 'Userjournals_allowcomments', 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_allowratings'		=> array('title'=> 'Userjournals_allowratings', 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_len_subject'		=> array('title'=> 'Userjournals_len_subject', 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_len_preview'		=> array('title'=> 'Userjournals_len_preview', 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_recent_entries'		=> array('title'=> 'userjournals_recent_entries', 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_allowratings'		=> array('title'=> 'userjournals_show_rss', 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>'', 'writeParms' => array()),		 
-			'userjournals_allowratings'		=> array('title'=> 'userjournals_show_playing', 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>'', 'writeParms' => array()),		 
-			'userjournals_show_mood'		=> array('title'=> 'userjournals_show_playing', 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>'', 'writeParms' => array()),			 
-			'userjournals_show_cats'		=> array('title'=> 'userjournals_show_cats', 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>'', 'writeParms' => array()),	 
-			'userjournals_template'		=> array('title'=> 'userjournals_template', 'tab'=>0, 'type'=>'text', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_bloggers_menu_max'		=> array('title'=> 'userjournals_bloggers_menu_max', 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_bloggers_per_page'		=> array('title'=> 'userjournals_bloggers_per_page', 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>'', 'writeParms' => array()),
-			'userjournals_blogs_per_page'		=> array('title'=> 'userjournals_blogs_per_page', 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>'', 'writeParms' => array()),	 
+			'userjournals_active'		=> array('title'=> JOURNAL_A3, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A3_P, 'writeParms' => array()),
+			
+			'userjournals_page_title'		=> array('title'=> JOURNAL_A13, 'tab'=>0, 'type'=>'text', 'data' => 'str', 'help'=>JOURNAL_A13_P, 'writeParms' => array()),
+			
+			'userjournals_menu_title'		=> array('title'=> JOURNAL_A14, 'tab'=>0, 'type'=>'text', 'data' => 'str', 'help'=>JOURNAL_A14_P, 'writeParms' => array()),
+			
+			'userjournals_cat_menu_title'		=> array('title'=> JOURNAL_A29, 'tab'=>0, 'type'=>'text', 'data' => 'str', 'help'=>JOURNAL_A29_P, 'writeParms' => array()),
+			
+			'userjournals_writers'		=> array('title'=> JOURNAL_A11, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>JOURNAL_A11_P, 'writeParms' => array()),
+			
+			'userjournals_readers'		=> array('title'=> JOURNAL_A12, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>JOURNAL_A12_P, 'writeParms' => array()),
+
+			'userjournals_allowcomments'		=> array('title'=> JOURNAL_A6, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A6_P, 'writeParms' => array()),
+	 
+			'userjournals_allowratings'		=> array('title'=> JOURNAL_A15, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A15_P, 'writeParms' => array()),
+
+			'userjournals_len_subject'		=> array('title'=> JOURNAL_A19, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A19_P, 'writeParms' => array()),
+
+			'userjournals_len_preview'		=> array('title'=> JOURNAL_A20, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A20_P, 'writeParms' => array()),
+
+			'userjournals_recent_entries'		=> array('title'=> JOURNAL_A21, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A21_P, 'writeParms' => array()),
+	
+			'userjournals_bloggers_menu_max'		=> array('title'=> JOURNAL_A31, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A31_P, 'writeParms' => array()),
+
+			'userjournals_bloggers_per_page'		=> array('title'=> JOURNAL_A32, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A32_P, 'writeParms' => array()),
+
+			'userjournals_blogs_per_page'		=> array('title'=> JOURNAL_A33, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A33_P, 'writeParms' => array()),	
+			
+			'userjournals_show_rss'		=> array('title'=> JOURNAL_A22, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A22_P, 'writeParms' => array()),
+
+			'userjournals_show_playing'		=> array('title'=> JOURNAL_A23, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A23_P, 'writeParms' => array()),	
+
+			'userjournals_show_cats'		=> array('title'=>JOURNAL_A25, 'tab'=>0, 'type'=>'dropdown', 
+			'data' => 'str', 
+			'help'=>JOURNAL_A25_P,  ),	
+
+			'userjournals_template'		=> array('title'=> JOURNAL_A30, 'tab'=>0, 'type'=>'dropdown', 'data' => 'str', 'help'=>JOURNAL_A30_P, 'writeParms' => array()),
+
+			'userjournals_show_mood'		=> array('title'=> JOURNAL_A24, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A24_P, 'writeParms' => array()),	
+
+			'userjournals_report_blog'		=> array('title'=> JOURNAL_A34, 'tab'=>0, 'type'=>'dropdown', 'data' => 'str', 'help'=>JOURNAL_A34_P, 'writeParms' => array()),
+
+
 		); 
 
 	
 		public function init()
 		{
-			// This code may be removed once plugin development is complete. 
-			if(!e107::isInstalled('userjournals_menu'))
-			{
-				e107::getMessage()->addWarning("This plugin is not yet installed. Saving and loading of preference or table data will fail.");
-			}
-			
-			// Set drop-down values (if any). 
-			$this->fields['userjournals_categories']['writeParms']['optArray'] = array('userjournals_categories_0','userjournals_categories_1', 'userjournals_categories_2'); // Example Drop-down array. 
-			$this->fields['userjournals_mood']['writeParms']['optArray'] = array('userjournals_mood_0','userjournals_mood_1', 'userjournals_mood_2'); // Example Drop-down array. 
-	
+
+			$this->prefs['userjournals_show_cats']['writeParms']['optArray'] = array(JOURNAL_A25_0,JOURNAL_A25_1,JOURNAL_A25_2); 
+
+			$this->prefs['userjournals_report_blog']['writeParms']['optArray'] = array(	JOURNAL_A34_0,JOURNAL_A34_1,JOURNAL_A34_2,JOURNAL_A34_3);  
 		}
 
 		
