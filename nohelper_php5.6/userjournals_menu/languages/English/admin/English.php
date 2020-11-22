@@ -36,7 +36,7 @@ define("JOURNAL_VERSION","1.1"); // Do not change this unless you really are upd
 
 define("LAN_JOURNAL_A0",    	"UserJournals");
 define("LAN_JOURNAL_A0_SUM",   "UserJournals plugin for e107 website system");
-define("LAN_JOURNAL_A0_DESC",   "UserJournals plugin for e107 website system");
+define("LAN_JOURNAL_A0_DESC",   "This plugin allows the e107 CMS to support individual journals for registered/logged-in users. Each user gets their own journal, and can write, edit, and delete their entries. Admin has the option of totally disabling User Journals, as well as restricting access to logged-in users only.");
 define("JOURNAL_A1",    "Update Settings");
 define("JOURNAL_A2",    "Settings Saved");
 define("JOURNAL_A3",    "Activate");
@@ -107,6 +107,7 @@ define("JOURNAL_A34_3", "Log to admin Log and E-Mail site admin");
 
 define("LAN_JOURNAL_MENU_00",  "Preferences");
 define("JOURNAL_MENU_01",  "Categories");
+define("JOURNAL_MENU_01_ADD",  "Add New Category");
 define("JOURNAL_MENU_98",  "Convert comments");
 define("JOURNAL_MENU_99",  "Read Me");
 ?>

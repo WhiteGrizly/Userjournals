@@ -66,16 +66,16 @@ class leftmenu_adminArea extends e_admin_dispatcher
 
     protected $adminMenu = array(
 
-		'cat/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'cat/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+		'cat/list'			=> array('caption'=> JOURNAL_MENU_01, 'perm' => 'P'),
+		'cat/create'		=> array('caption'=> JOURNAL_MENU_01_ADD, 'perm' => 'P'),
 
-		'main/list'			=> array('caption'=> LAN_MANAGE, 'perm' => 'P'),
-		'main/create'		=> array('caption'=> LAN_CREATE, 'perm' => 'P'),
+		'main/list'			=> array('caption'=> UJ8, 'perm' => 'P'),
+		'main/create'		=> array('caption'=> UJ10, 'perm' => 'P'),
 	
 		'main/prefs' 		=> array('caption'=> LAN_JOURNAL_MENU_00, 'perm' => 'P'),	
 
-		// 'main/div0'      => array('divider'=> true),
-		// 'main/custom'		=> array('caption'=> 'Custom Page', 'perm' => 'P'),
+		'main/div0'      	=> array('divider'=> true),
+		'main/readme'		=> array('caption'=> JOURNAL_MENU_99, 'perm' => 'P'),
 		
 	);
 
