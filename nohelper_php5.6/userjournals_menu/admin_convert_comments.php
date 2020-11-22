@@ -41,7 +41,7 @@ function ujConvertComments() {
             while ($row = $sql->db_Fetch()){
                extract($row);
                $sqlerror = "";
-               $subject = JOURNAL_A0;
+               $subject = LAN_JOURNAL_A0;
                if ($sql2->db_Select("userjournals", "userjournals_subject", "userjournals_id=".$userjournals_comment_parent)){
                   if ($row = $sql2->db_Fetch()) {
                      $subject = $row[0];

@@ -24,7 +24,7 @@ if (file_exists(e_PLUGIN."userjournals_menu/languages/".e_LANGUAGE.".php")){
 }
 
 // Plugin info -------------------------------------------------------------------------------------------------------
-$eplug_name          = JOURNAL_A0;
+$eplug_name          = LAN_JOURNAL_A0;
 $eplug_version       = JOURNAL_VERSION;
 $eplug_author        = "Del Rudolph, SKiTZ716, bkwon, bugrain";
 $eplug_logo          = "images/userjournals.png";

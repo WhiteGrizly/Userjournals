@@ -6,7 +6,7 @@ require_once(e_ADMIN."auth.php");
 $pageid  = JOURNAL_MENU_99;
 
 $text .= "<div style='padding:5px;'>".
-JOURNAL_A0." ".JOURNAL_VERSION." by bugrain<br>
+LAN_JOURNAL_A0." ".JOURNAL_VERSION." by bugrain<br>
 <br>
 A plugin for the e107 Website System (http://e107.org)<br>
 <br>

@@ -1,7 +1,9 @@
 <?php
 define("JOURNAL_VERSION","1.1"); // Do not change this unless you really are updating the plugin
 
-define("JOURNAL_A0",    "UserJournals");
+define("LAN_JOURNAL_A0",    	"UserJournals");
+define("LAN_JOURNAL_A0_SUM",   "UserJournals plugin for e107 website system");
+define("LAN_JOURNAL_A0_DESC",   "UserJournals plugin for e107 website system");
 define("JOURNAL_A1",    "Update Settings");
 define("JOURNAL_A2",    "Settings Saved");
 define("JOURNAL_A3",    "Activate");
