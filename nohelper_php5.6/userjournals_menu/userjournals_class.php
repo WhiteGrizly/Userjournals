@@ -2,8 +2,8 @@
 
  
 if (!class_exists("UserJournals")) {
-   include_lan(e_PLUGIN."userjournals_menu/languages/English.php");
-   include_lan(e_LANGUAGEDIR."English/lan_user.php");
+   e107::plugLan("userjournals_menu" , "admin/".e_LANGUAGE, false);
+   e107::plugLan("userjournals_menu" , e_LANGUAGE, false);
 
    require_once(e_PLUGIN."userjournals_menu/userjournals_shortcodes.php");
    global $pref;

@@ -10,17 +10,8 @@
       header("location:../../index.php");
    }
 
-   if (file_exists(e_PLUGIN."userjournals_menu/languages/admin/".e_LANGUAGE.".php")){
-      include_once(e_PLUGIN."userjournals_menu/languages/admin/".e_LANGUAGE.".php");
-   } else {
-      include_once(e_PLUGIN."userjournals_menu/languages/admin/English.php");
-   }
-
-   if (file_exists(e_PLUGIN."userjournals_menu/languages/".e_LANGUAGE.".php")){
-      include_once(e_PLUGIN."userjournals_menu/languages/".e_LANGUAGE.".php");
-   } else {
-      include_once(e_PLUGIN."userjournals_menu/languages/English.php");
-   }
+  e107::plugLan("userjournals_menu" , "admin/".e_LANGUAGE, false);
+  e107::plugLan("userjournals_menu" , e_LANGUAGE, false);
 
    // Include the e107 Helper classes
    if (file_exists(e_PLUGIN."e107helpers/e107Helper.php")) {

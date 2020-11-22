@@ -2,11 +2,8 @@
 
 if (!defined('e107_INIT')) { exit; }
 
-if (file_exists(e_PLUGIN."userjournals_menu/languages/".e_LANGUAGE.".php")){
-   include_once(e_PLUGIN."userjournals_menu/languages/".e_LANGUAGE.".php");
-} else {
-   include_once(e_PLUGIN."userjournals_menu/languages/English.php");
-}
+e107::plugLan("userjournals_menu" , "admin/".e_LANGUAGE, false);
+e107::plugLan("userjournals_menu" , e_LANGUAGE, false);
 
 // $e_plug_table     = Comment type (max 10 character used to uniquely identify comments for this plugin)
 // $reply_location   = Relative URL to go to when comment is clicked

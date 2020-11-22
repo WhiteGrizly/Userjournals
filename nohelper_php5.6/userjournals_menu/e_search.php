@@ -1,9 +1,6 @@
 <?php
-if (file_exists(e_PLUGIN."userjournals_menu/languages/".e_LANGUAGE.".php")){
-   include_once(e_PLUGIN."userjournals_menu/languages/".e_LANGUAGE.".php");
-} else {
-   include_once(e_PLUGIN."userjournals_menu/languages/English.php");
-}
+e107::plugLan("userjournals_menu" , "admin/".e_LANGUAGE, false);
+e107::plugLan("userjournals_menu" , e_LANGUAGE, false);
 
 $search_info[] = array(
    'sfile'     => e_PLUGIN.'userjournals_menu/search.php',
