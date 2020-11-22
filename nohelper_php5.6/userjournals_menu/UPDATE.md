@@ -6,3 +6,5 @@
  * scan plugin directory to get setup working
  
  * run update process from e107 admin area to fix preferences
+
+ * move theme templates to correct folder (in template subfolder)

@@ -112,9 +112,50 @@ class userjournals_ui extends e_admin_ui
 			$this->prefs['userjournals_show_cats']['writeParms']['optArray'] = array(JOURNAL_A25_0,JOURNAL_A25_1,JOURNAL_A25_2); 
 
 			$this->prefs['userjournals_report_blog']['writeParms']['optArray'] = array(	JOURNAL_A34_0,JOURNAL_A34_1,JOURNAL_A34_2,JOURNAL_A34_3);  
+
+			$available_templates = $this->getTemplates();
+			foreach($available_templates AS  $available_template) {
+				$key = $available_template[0];
+				$options[$key] = $available_template[1];
+			}
+			print_a($options);
+			$this->prefs['userjournals_template']['writeParms']['optArray'] = $options;
 		}
 
 		
+		function getTemplates() {
+			
+			$sitetheme = e107::getPref('sitetheme');
+
+			function getTemplatesFromDir($folder, $suffix, $sc_folder) {
+			   $templates = array();
+			   $handle = opendir($folder);
+			   while ($file = readdir($handle)) {
+				  $pathinfo = pathinfo($file);
+ 
+				  if ($pathinfo["extension"] == "php") {
+					 unset($userjournals_template_name);
+					 include($folder.$file);
+					 if (isset($userjournals_template_name)) {
+						$templates[] = array($sc_folder.$file, $userjournals_template_name.$suffix);
+					 } else {
+						$templates[] = array($sc_folder.$file, $file.$suffix);
+					 }
+				  }
+			   }
+			   closedir($handle);
+			   return $templates;
+			}
+   
+			$templates = array_merge(
+			   getTemplatesFromDir(e_PLUGIN."userjournals_menu/templates/", UJ99, "{e_PLUGIN}userjournals_menu/templates/"),
+			   getTemplatesFromDir(e_THEME.$sitetheme."/templates/userjournals_menu/", UJ100, "{e_THEME}".$sitetheme."/templates/userjournals_menu/")
+			);
+			asort($templates);
+	 
+			return $templates;
+		 }
+
 		// ------- Customize Create --------
 		
 		public function beforeCreate($new_data,$old_data)
