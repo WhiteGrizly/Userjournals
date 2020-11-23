@@ -47,11 +47,7 @@ define("JOURNAL_A6",    "Allow Comments");
 define("JOURNAL_A6_P",  "Select the user class that can post comments");
 define("JOURNAL_A7",    "Comment Poster can edit comment");
 define("JOURNAL_A7_P",  "Select this option to allow comment posters to edit their own comments");
-define("JOURNAL_A8",    "Configure ".JOURNAL_A0);
-define("JOURNAL_A9",    JOURNAL_A0." ".JOURNAL_VERSION." successfully installed.<br /><br />Please visit the
-<a href='".e_PLUGIN."userjournals_menu/admin_conf.php'>configuration page</a>
-to turn on and configure journaling capabilities. Then visit Admin -> Menus and activate the UserJournals Menu.");
-define("JOURNAL_A10",   JOURNAL_A0." successfully upgraded to ".JOURNAL_VERSION);
+ 
 define("JOURNAL_A11",   "Writers");
 define("JOURNAL_A11_P", "Select the user class that is allowed to write journals");
 define("JOURNAL_A12",   "Readers");

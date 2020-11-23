@@ -10,6 +10,8 @@
 **
 */
 
+ e107::plugLan("userjournals_menu" , "admin/".e_LANGUAGE, false);
+ e107::plugLan("userjournals_menu" , e_LANGUAGE, false);
 
 if(!class_exists("userjournals_menu_setup"))
 {

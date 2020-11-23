@@ -201,7 +201,7 @@ SC_END
 
 SC_BEGIN UJ_BLOG_COMMENTS_TOTAL
    global $plugPrefs, $uj_blog;
-   $text = "";  print_a('xxx' );
+   $text = "";   
    parse_str($parm, $parms);
    if (array_key_exists("label", $parms)) {
       $text .= UJ30." ";  
@@ -290,7 +290,7 @@ SC_BEGIN UJ_MENU_READER_BLOGGERS
             $text .= $tp->parseTemplate("{UJ_BLOGGER_MENU_LINK}", FALSE, $userjournals_shortcodes);
          }
       } else {
-         $text .= 'xxx'.UJ28;
+         $text .= " ".UJ28;
       }
    }
    return $text;

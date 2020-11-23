@@ -42,7 +42,7 @@ class nextprev {
      
      /* change for 2.3:  page number is the same as number in url - start for limit clausule you get by page * view */
       
-	function nextprev($url, $from, $view, $total, $td, $qs = "", $return = false) {
+	function nextprev($url = '' , $from = 0, $view = 0, $total= 0 , $td = "", $qs = "", $return = false) {
 		if ($total > $view) {
 			$pages = ceil($total / $view) ;
 		} else {

@@ -22,14 +22,7 @@
    }
 
    require_once(HEADERF);
-
-   // Include the e107 Helper classes
-   if (file_exists(e_PLUGIN."e107helpers/e107Helper.php")) {
-      require_once(e_PLUGIN."e107helpers/e107Helper.php");
-   } else {
-      print "Fatal error, cannot find e107Helper class";
-   }
-
+ 
    if (file_exists(e_PLUGIN."userjournals_menu/userjournals_class.php")) {
       include(e_PLUGIN."userjournals_menu/userjournals_class.php");
    } else {

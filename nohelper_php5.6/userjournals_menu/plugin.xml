@@ -16,6 +16,9 @@
 		icon128="images/userjournals.pn" 
 		primary="true" >LAN_CONFIGURE</link>
 	</adminLinks>
+	<siteLinks>
+		<link url="{e_PLUGIN}userjournals_menu/userjournals.php" perm='everyone' lan=''>LAN_JOURNAL_A0</link>
+	</siteLinks>
 	<pluginPrefs>
 		<pref name='userjournals_active'>1</pref>
 		<pref name='userjournals_allowratings'>253</pref>
@@ -23,11 +26,11 @@
 		<pref name='userjournals_bloggers_menu_max'>0</pref>
 		<pref name='userjournals_bloggers_per_page'>0</pref>
 		<pref name='userjournals_blogs_per_page'>30</pref>
-		<pref name='userjournals_cat_menu_title'>UJ94</pref>
+		<pref name='userjournals_cat_menu_title'>Blog Categories</pref>
 		<pref name='userjournals_len_subject'>30</pref>
 		<pref name='userjournals_len_preview'>400</pref>
-		<pref name='userjournals_menu_title'>UJ1</pref>
-		<pref name='userjournals_page_title'>UJ1</pref>
+		<pref name='userjournals_menu_title'>Blogs</pref>
+		<pref name='userjournals_page_title'>Blogs</pref>
 		<pref name='userjournals_readers'>0</pref>
 		<pref name='userjournals_recent_entries'>5</pref>
 		<pref name='userjournals_report_blog'>0</pref>

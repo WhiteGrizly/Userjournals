@@ -182,6 +182,7 @@ if (!class_exists("UserJournals")) {
 			 
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
+             
 			$text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_bloggers_per_page"], $count, "", "bloggers", true);
 			 
 		 }
@@ -213,7 +214,7 @@ if (!class_exists("UserJournals")) {
                $text .= $this->GetBlog($row, $plugPrefs["userjournals_len_preview"]);
             }
          } else {
-            $text = $this->Message('208'.UJ28);
+            $text = $this->Message( UJ28);
          }
 
          if ($msg) {
@@ -223,8 +224,9 @@ if (!class_exists("UserJournals")) {
          if ($plugPrefs["userjournals_blogs_per_page"]) {
             $count = $sql->select("userjournals", "*", $qry);
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
+                       
             $np = new nextprev();
-            $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "blogger.$bloggerid", true);
+         //   $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "blogger.$bloggerid", true);
          }
          return array($caption, $text);
       }
@@ -274,7 +276,7 @@ if (!class_exists("UserJournals")) {
             $count = $sql->select("userjournals", "*", $qry );
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
-            $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "allblogs", true);
+           // $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "allblogs", true);
  
          }
          return array($caption, $text);
@@ -319,10 +321,13 @@ if (!class_exists("UserJournals")) {
 
             $text .= "<table border='0'>";
             $text .= "<tr><td class='forumheader3' style='width:20%'>".UJ6."</td>";
-            $text .= "<td class='forumheader3'><input type='text' class='tbox' name='journal_title' size='42' value='$userjournals_subject'/></td></tr>";
+            $text .= "<td class='forumheader3'>";
+            $text .=  e107::getForm()->text("journal_title" , $userjournals_subject,  "200", "size=42");
+            $text .= "</td></tr>";
             $checked = $userjournals_is_published==0 ? "checked='checked'" : "";
             $text .= "<tr><td class='forumheader3'>".UJ62."</td>";
             $text .= "<td class='forumheader3'><input type='checkbox' class='tbox' name='journal_published' value='0' $checked/><span class='smalltext'>".UJ63."</span></td></tr>";
+            
             if ($plugPrefs["userjournals_show_cats"] != 0) {
                $userjournals_categories = explode(",", $userjournals_categories);
                $text .= "<tr><td class='forumheader3'>".UJ91."</td>";
@@ -338,7 +343,10 @@ if (!class_exists("UserJournals")) {
             }
             if ($plugPrefs["userjournals_show_playing"] == 1) {
                $text .= "<tr><td class='forumheader3'>".UJ41."</td>";
-               $text .= "<td class='forumheader3'><input type='text' class='tbox' name='journal_playing' size='42' value='$userjournals_playing'/><br/><span class='smalltext'>".UJ64."</span></td></tr>";
+               $text .= "<td class='forumheader3'>";
+               $text .=  e107::getForm()->text("journal_playing" , $userjournals_playing,  "200", "size=42");
+               $text .= "<br/><span class='smalltext'>".UJ64."</span></td></tr>";
+                        
             }
             if ($plugPrefs["userjournals_show_mood"] == 1) {
                $text .= "<tr><td class='forumheader3'>".UJ42."</td><td class='forumheader3'><select class='tbox' name='journal_mood' size='1'>";
@@ -381,28 +389,45 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSave() {
-         global $plugPrefs, $sql;
+         global $plugPrefs ;
          // Only allow blog writers to save entries
          if (check_class($plugPrefs["userjournals_writers"])) {
             if ($_POST["journal_title"] != "" and $_POST["journal_entry"] != "") {
-               $parse = new textparse();
-               $journal_title       = $parse->formtpa($_POST['journal_title']);
+               $tp = e107::getParser();
+               
+               $journal_title       = $tp->toDB($_POST['journal_title']);
                $journal_published   = isset($_POST['journal_published']) ? 0 : 1;
-               $journal_playing     = $parse->formtpa($_POST['journal_playing']);
-               $journal_mood        = $parse->formtpa($_POST['journal_mood']);
-               $journal_entry       = $parse->formtpa($_POST['journal_entry']);
-               $journal_cats        = $_POST["journal_cat"];
+               $journal_playing     = $tp->toDB($_POST['journal_playing']);
+               $journal_mood        = $tp->toDB($_POST['journal_mood']);
+               $journal_entry       = $tp->toDB($_POST['journal_entry']);
+               $journal_cats        = $tp->toDB($_POST["journal_cat"]);
                $journal_cats        = implode(",", $journal_cats);
-
+               $journal_cats        = varset($journal_cats, '');
+               
                $thetime = time();
                $gen2 = new convert();
                $thedate = $gen2->convert_date($thetime, "forum");
-
-               $the_sql = "0, '".USERID."','$journal_title','$journal_cats','$journal_playing','$journal_mood','$journal_entry','$thedate','$thetime','0','0','0', $journal_published";
-               if ($sql->db_Insert('userjournals', $the_sql)){
+              
+               $the_sql = array(
+                    'userjournals_id'                => NULL,
+        		    'userjournals_userid'            => USERID,        
+                    'userjournals_subject'           => $journal_title,
+        		    'userjournals_categories'        => $journal_cats,
+        		    'userjournals_playing'           => $journal_playing,
+        	  	    'userjournals_mood'              => $journal_mood,         
+        			'userjournals_entry'             => $journal_entry,    
+                    'userjournals_date'              => $thedate,  
+                    'userjournals_timestamp'         => $thetime,  
+                    'userjournals_is_comment'        => 0,  
+                    'userjournals_comment_parent'    => 0,      
+                    'userjournals_is_blog_desc'      => 0,  
+                    'userjournals_is_published'      => $journal_published,   
+             );
+     
+               if (e107::getDb()->insert('userjournals', $the_sql)){
                   $text = $this->Message(UJ13);
                } else {
-                  $text = $this->Message(UJE02, "SQL ($the_sql) ".@mysql_error());
+                  $text = $this->Message(UJE02, "1. SQL ($the_sql) " . e107::getDb()->getLastErrorText() );
                }
             } else {
                $text = $this->Message(UJ23.' '.UJ21);
@@ -430,12 +455,12 @@ if (!class_exists("UserJournals")) {
             }
 
             if ($_POST["journal_title"] != "" and $_POST["journal_entry"] != "") {
-               $parse = new textparse;
-               $journal_title    = $parse->formtpa($_POST['journal_title']);
+               $tp = e107::getParser();
+               $journal_title    = $tp->toDB($_POST['journal_title']);
                $journal_published = isset($_POST['journal_published']) ? 0 : 1;
-               $journal_playing  = $parse->formtpa($_POST['journal_playing']);
-               $journal_mood     = $parse->formtpa($_POST['journal_mood']);
-               $journal_entry    = $parse->formtpa($_POST['journal_entry']);
+               $journal_playing  = $tp->toDB($_POST['journal_playing']);
+               $journal_mood     = $tp->toDB($_POST['journal_mood']);
+               $journal_entry    = $tp->toDB($_POST['journal_entry']);
                $journal_cats     = $_POST["journal_cat"];
                $journal_cats     = implode(",", $journal_cats);
 
@@ -452,7 +477,7 @@ if (!class_exists("UserJournals")) {
                if ($sql->db_Update('userjournals', $the_sql)){
                   $text = $this->Message(UJ13);
                } else {
-                  $text = $this->Message(UJE02, "SQL ($the_sql) ".@mysql_error());
+                  $text = $this->Message(UJE02, "2. SQL ($the_sql) ". e107::getDb()->getLastErrorText()   );
                }
             } else {
                $text = $this->Message(UJ23.' '.UJ21);
@@ -480,7 +505,7 @@ if (!class_exists("UserJournals")) {
 
             // Do the delete
             if (!$sql->db_Delete("userjournals", "userjournals_id='$blogid' OR userjournals_comment_parent='$blogid'")){
-               $text = $this->Message("SQL ".UJ23.@mysql_error());
+               $text = $this->Message("SQL ".UJ23 );
             }
             // Delete any comments for this entry
             $sql->db_Delete("comments", "comment_item_id='$blogid' and comment_type='userjourna'");
@@ -534,18 +559,33 @@ if (!class_exists("UserJournals")) {
          // Only allow blog writers to save a synopsis
          if (check_class($plugPrefs["userjournals_writers"])) {
             if ($_POST["journal_synopsis"] != "") {
-               $parse = new textparse;
-               $journal_synopsis = $parse->formtpa($_POST['journal_synopsis']);
+               $tp = e107::getParser();
+               $journal_synopsis = $tp->toDB($_POST['journal_synopsis']);
 
                $thetime = time();
                $gen2 = new convert;
                $thedate = $gen2->convert_date($thetime, "forum");
-
-               $the_sql = "0,".USERID.",'".USERNAME."','','','','$journal_synopsis','$thedate','$thetime','0','0','1','0'";
-               if ($sql->db_Insert('userjournals', $the_sql)){
+      
+               $the_sql =  array(
+        		    'userjournals_id'                => NULL,
+        		    'userjournals_userid'            => USERID,
+        		    'userjournals_subject'           => USERNAME,
+        		    'userjournals_categories'        => '',
+        		    'userjournals_playing'           => '',
+        			'userjournals_mood'              => '',
+        			'userjournals_entry'             => $journal_synopsis,    
+                    'userjournals_date'              => $thedate,  
+                    'userjournals_timestamp'         => $thetime,  
+                    'userjournals_is_comment'       => 0,  
+                    'userjournals_comment_parent'    => 0,      
+                    'userjournals_is_blog_desc'      => 1,  
+                    'userjournals_is_published'      => 0,                                     
+        		);
+          
+               if ($sql->insert('userjournals', $the_sql)){
                   $text = $this->Message(UJ54);
                } else {
-                  $text = $this->Message(UJE01, @mysql_error());
+                  $text = $this->Message(UJE01, "1. SQL ($the_sql) " . e107::getDb()->getLastErrorText() );
                }
             } else {
                return $this->BlogSynopsisDelete();
@@ -565,8 +605,8 @@ if (!class_exists("UserJournals")) {
 
             if ($_POST["journal_synopsis"]) {
 
-               $parse = new textparse;
-               $journal_synopsis = $parse->formtpa($_POST['journal_synopsis']);
+               $tp = e107::getParser();
+               $journal_synopsis = $tp->toDB($_POST['journal_synopsis']);
 
                $thetime = time();
                $gen2 = new convert;
@@ -576,7 +616,7 @@ if (!class_exists("UserJournals")) {
                if ($sql->db_Update('userjournals', $the_sql)){
                   $text = $this->Message(UJ54);
                } else {
-                  $text = $this->Message("SQL ".UJ23.@mysql_error());
+                  $text = $this->Message("SQL ".UJ23 );
                }
             } else {
                return $this->BlogSynopsisDelete();
@@ -598,7 +638,7 @@ if (!class_exists("UserJournals")) {
             if ($sql->db_Delete("userjournals", "userjournals_userid='".USERID."' and userjournals_is_blog_desc='1'")){
                $text = $this->Message(UJ89);
             } else {
-               $text = $this->Message("SQL ".UJ23.@mysql_error());
+               $text = $this->Message("SQL ".UJ23 );
             }
          } else {
             $text = $this->Message(UJ17);
