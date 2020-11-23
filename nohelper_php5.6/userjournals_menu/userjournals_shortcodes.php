@@ -61,8 +61,8 @@ SC_BEGIN UJ_BLOGGER_PICTURE
 SC_END
 
 SC_BEGIN UJ_BLOGGER_SYNOPSIS
-   global $e107Helper, $uj_synopsis;
-   return $e107Helper->tp_toHTML($uj_synopsis["userjournals_entry"], true);
+   global $uj_synopsis;
+   return e107::getParser()->toHTML($uj_synopsis["userjournals_entry"],true,'DESCRIPTION');
 SC_END
 
 SC_BEGIN UJ_BLOG_LINK
@@ -143,7 +143,7 @@ SC_BEGIN UJ_BLOG_DELETE_LINK
    global $uj_blog;
    $text = "";
    if ($uj_blog["userjournals_userid"] == USERID || ADMIN) {
-      $text .= "<a href='#' onclick='e107Helper.confirmDelete(\"".UJ60."\", \"".e_PLUGIN."userjournals_menu/userjournals.php?delete.".$uj_blog["userjournals_id"]."\");'>".UJ19."</a>";
+      $text .= "<a href='#' onclick='UJConfirmDelete(\"".UJ60."\", \"".e_PLUGIN."userjournals_menu/userjournals.php?delete.".$uj_blog["userjournals_id"]."\");'>".UJ19."</a>";
    }
    return $text;
 SC_END
@@ -165,7 +165,7 @@ SC_BEGIN UJ_BLOG_BLOGGER_LINK
 SC_END
 
 SC_BEGIN UJ_BLOG_ENTRY
-   global $e107Helper, $uj_blog;
+   global $uj_blog;
    $text = e107::getParser()->toHTML($uj_blog["userjournals_entry"], TRUE, 'DESCRIPTION');
    return $text;
 SC_END
@@ -173,22 +173,23 @@ SC_END
 SC_BEGIN UJ_BLOG_ENTRY_SHORT
    global $plugPrefs, $tp, $uj_blog;
    $text = e107::getParser()->toHTML($uj_blog["userjournals_entry"], TRUE, 'DESCRIPTION');
-   // use this when e107 helkpers 0.7+ released $userjournals_entry = $e107Helper->tp_toHTML($userjournals_entry, true, $limit, "");
    $text = e107::getParser()->html_truncate($text, $plugPrefs["userjournals_len_preview"], "...");
    return $text;
 SC_END
 
 SC_BEGIN UJ_BLOG_RATINGS
-   global $e107Helper, $plugPrefs, $uj_blog;
+   global  $plugPrefs, $uj_blog;
    $text = "";
    if (check_class($plugPrefs["userjournals_allowratings"])) {
-      $text .= $e107Helper->getRating2("userjourna", $uj_blog["userjournals_id"]);
+        $frm = e107::getForm();
+		$options = array('label'=>' ','template'=>'RATE|VOTES|STATUS');
+	  	$text .=  $frm->rate("userjourna", $uj_blog["userjournals_id"], $options);
    }
    return $text;
 SC_END
 
 SC_BEGIN UJ_BLOG_COMMENTS
-   global $e107Helper, $plugPrefs, $uj_blog;
+   global $plugPrefs, $uj_blog;
    $text = "";
    if (check_class($plugPrefs["userjournals_allowcomments"])) {
 	   $title = e107::getParser()->post_toHTML($uj_blog["userjournals_entry"], true); //has to be unique todo fix this
@@ -199,13 +200,12 @@ SC_BEGIN UJ_BLOG_COMMENTS
 SC_END
 
 SC_BEGIN UJ_BLOG_COMMENTS_TOTAL
-   global $e107Helper, $plugPrefs, $uj_blog;
+   global $plugPrefs, $uj_blog;
    $text = "";  print_a('xxx' );
    parse_str($parm, $parms);
    if (array_key_exists("label", $parms)) {
       $text .= UJ30." ";  
    }
-   print_a($text);
    if (check_class($plugPrefs["userjournals_allowcomments"])) {
        $text .= e107::getComment()->count_comments('userjourna', $uj_blog["userjournals_id"]);
    }

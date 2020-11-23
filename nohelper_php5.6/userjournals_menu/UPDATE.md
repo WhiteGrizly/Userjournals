@@ -8,3 +8,5 @@
  * run update process from e107 admin area to fix preferences
 
  * move theme templates to correct folder (in template subfolder)
+
+ * scan plugin directory to load new addon

@@ -56,12 +56,11 @@ if (!class_exists("UserJournals")) {
          $this->user = false;
 
          // Get all categories - we need these all ove rthe place
-         if ($sql->select("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", false)) {
-            while ($row = $sql->fetch()) {
-               $this->cats[$row["userjournals_cat_id"]] = $row;
-            }
+         $result = e107::getDb()->retrieve("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", true);
+         foreach($result AS $row) {
+            $this->cats[$row["userjournals_cat_id"]] = $row;
          }
-
+ 
          // Only process URL parameters if this is a main page (i.e. not a menu)
          if ($mainpage) {
             $qs   = explode(".", e_QUERY);
@@ -260,22 +259,19 @@ if (!class_exists("UserJournals")) {
             $limit = " limit $start,".$plugPrefs["userjournals_blogs_per_page"];
          }      
          
-         $qry = "WHERE userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC";
-         if ($sql->select("userjournals", "*", $qry.$limit, true)){
-            $text = "";
-            if ($row = $sql->fetch()){
-               do {
-                  $text .= $this->GetBlog($row, $plugPrefs["userjournals_len_preview"])."<br/>";
-               } while ($row = $sql->fetch());
-            } else {
-               $text = $this->Message("259".UJ28);
+		 $qry = "  userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC";
+		  
+         if ($rows = $sql->retrieve("userjournals", "*", $qry.$limit, true  )) {
+			$text = "";
+			foreach($rows AS $row) {
+               $text .= $this->GetBlog($row, $plugPrefs["userjournals_len_preview"])."<br/>"; 
             }
          } else {
-            $text = $this->Message("263".UJ28);
+            $text = $this->Message(UJ28);
          }
 
          if ($plugPrefs["userjournals_blogs_per_page"]) {
-            $count = $sql->select("userjournals", "*", $qry, true);
+            $count = $sql->select("userjournals", "*", $qry );
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
             $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "allblogs", true);
@@ -287,9 +283,9 @@ if (!class_exists("UserJournals")) {
       function GetBlog($blog, $limit=false) {
          global  $plugPrefs, $tp, $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
 
-         $uj_blog = $blog;
-         $uj_categories = $this->cats;
-         if ($limit) {          
+         $uj_blog = $blog;  
+         $uj_categories = $this->cats;   
+         if ($limit) {        
             $text = $tp->parseTemplate($UJ_BLOG_SHORT, FALSE, $userjournals_shortcodes);
          } else {
             $text = $tp->parseTemplate($UJ_BLOG, FALSE, $userjournals_shortcodes);
@@ -622,11 +618,11 @@ if (!class_exists("UserJournals")) {
                $text .= "<tr><td class='forumheader3' style='text-align:center;'>$msg</td></tr>";
             }
             $text .= "<tr><td class='forumheader3'><p>".UJ102."</p>";
-            $text .= "<p>".UJ103." ".UJ104." </strong>".$_SERVER['REMOTE_ADDR']."</strong>, ".UJ105." <strong>".gethostbyaddr($_SERVER['REMOTE_ADDR'])."</strong>.</p>";
+           // $text .= "<p>".UJ103." ".UJ104." </strong>".$_SERVER['REMOTE_ADDR']."</strong>, ".UJ105." <strong>".gethostbyaddr($_SERVER['REMOTE_ADDR'])."</strong>.</p>";
             $text .= "</td></tr>";
             $text .= "<tr><td class='forumheader3'>".UJ106." ".USERNAME."<br/>";
 			//$text .= $e107xHelper->getcTextarea($_POST['journal_report'], "journal_report", "tbox", 15, false, "100%", 0);
-			$text .=   e107::getForm()->bbarea('journal_report',$_POST['journal_report'], NULL, '_common', 'medium', array('id' => 'journal_report', 'wysiwyg' => $this->editor)) ;
+	    	$text .=   e107::getForm()->bbarea('journal_report',$_POST['journal_report'], NULL, '_common', 'medium', array('id' => 'journal_report', 'wysiwyg' => $this->editor)) ;
             $text .= "</td></tr>";
             $text .= "<tr><td class='forumheader3' style='text-align:center;'>";
             $text .= "<input type='submit' class='button' value='".UJ101."' name='report_blog'/> ";
@@ -653,7 +649,7 @@ if (!class_exists("UserJournals")) {
                $message .= " ".UJ105." ".gethostbyaddr($_SERVER['REMOTE_ADDR']).".<br/>";
                $message .= UJ101.": ".$tp->toDB($_POST['journal_report']);
                if ($plugPrefs['userjournals_report_blog'] == 1 || $plugPrefs['userjournals_report_blog'] == 3) {
-                  $sql->db_Write_log("UserJournals", $message, "UserJournals");
+                  e107::getDb()->log("UserJournals", $message, "UserJournals");
                }
                if ($plugPrefs['userjournals_report_blog'] == 2 || $plugPrefs['userjournals_report_blog'] == 3) {
          			require_once(e_HANDLER."mail.php");

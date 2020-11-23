@@ -18,8 +18,8 @@
 	</adminLinks>
 	<pluginPrefs>
 		<pref name='userjournals_active'>1</pref>
-		<pref name='userjournals_allowratings'>0</pref>
-		<pref name='userjournals_allowcomments'>0</pref>
+		<pref name='userjournals_allowratings'>253</pref>
+		<pref name='userjournals_allowcomments'>253</pref>
 		<pref name='userjournals_bloggers_menu_max'>0</pref>
 		<pref name='userjournals_bloggers_per_page'>0</pref>
 		<pref name='userjournals_blogs_per_page'>30</pref>

@@ -87,9 +87,9 @@ class userjournals_ui extends e_admin_ui
 			
 			'userjournals_readers'		=> array('title'=> JOURNAL_A12, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>JOURNAL_A12_P, 'writeParms' => array()),
 
-			'userjournals_allowcomments'		=> array('title'=> JOURNAL_A6, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A6_P, 'writeParms' => array()),
+			'userjournals_allowcomments'		=> array('title'=> JOURNAL_A6, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>JOURNAL_A6_P, 'writeParms' => array()),
 	 
-			'userjournals_allowratings'		=> array('title'=> JOURNAL_A15, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A15_P, 'writeParms' => array()),
+			'userjournals_allowratings'		=> array('title'=> JOURNAL_A15, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>JOURNAL_A15_P, 'writeParms' => array()),
 
 			'userjournals_len_subject'		=> array('title'=> JOURNAL_A19, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A19_P, 'writeParms' => array()),
 
