@@ -321,11 +321,14 @@ if (!class_exists("UserJournals")) {
       }
 
       function GetBlog($blog, $limit=false) {
-         global $tp, $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
+         global $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
 
 		 $plugPrefs = e107::getPlugPref('userjournals_menu');
+		 $tp = e107::getParser();
+
          $uj_blog = $blog;  
-         $uj_categories = $this->cats;   
+		 $uj_categories = $this->cats;   
+ 
          if ($limit) {        
             $text = $tp->parseTemplate($UJ_BLOG_SHORT, FALSE, $userjournals_shortcodes);
          } else {
@@ -802,6 +805,7 @@ if (!class_exists("UserJournals")) {
          }
       }
 
+	  /* fix: it is menu, use the same shortcode for menus, bullets are part of template */
       function GetCategoriesMenu() {
          global $userjournals_shortcodes, $uj_category;
 
@@ -815,11 +819,10 @@ if (!class_exists("UserJournals")) {
                if (count($this->cats) > 0) {
                   $text = "<a href='".e_PLUGIN."userjournals_menu/userjournals.php?allcats'>".UJ92."</a><br/><br/>";
                   $text .= "<strong>".UJ91."</strong>";
-				  $keys = array_keys($this->cats);
-                  foreach ($keys as $key) {
-                     $text .= "<br/>&bull;";
+				  $keys = array_keys($this->cats);  
+                  foreach ($keys as $key) {    
                      $uj_category = $this->cats[$key];
-                     $text .= $tp->parseTemplate("{UJ_CATEGORY_LINK}", FALSE, $userjournals_shortcodes);
+					 $text .= $tp->parseTemplate("{UJ_CATEGORY_MENU_LINK}", FALSE, $userjournals_shortcodes);
                   }
                   $ns->tablerender($plugPrefs["userjournals_cat_menu_title"], $text);
                } else {

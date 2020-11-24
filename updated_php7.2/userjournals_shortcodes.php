@@ -100,9 +100,10 @@ SC_BEGIN UJ_BLOG_DATE
 SC_END
 
 SC_BEGIN UJ_BLOG_CATEGORIES
-   global $tp, $uj_blog, $uj_categories, $uj_category, $userJournals;
+   global $tp, $uj_blog, $uj_categories, $uj_category, $userJournals, $userjournals_shortcodes;
    $text = "";
    $plugPrefs = e107::getPlugPref('userjournals_menu');
+   
    if ($plugPrefs["userjournals_show_cats"] != 0 && strlen($uj_blog["userjournals_categories"]) > 0) {
       parse_str($parm, $parms);
       if (array_key_exists("label", $parms)) {
@@ -110,9 +111,8 @@ SC_BEGIN UJ_BLOG_CATEGORIES
       }
       $userjournals_categories = explode(",", $uj_blog["userjournals_categories"]);
       for ($i=0; $i<count($userjournals_categories); $i++) {
-         $uj_category = $uj_categories[$userjournals_categories[$i]];
+		 $uj_category = $uj_categories[$userjournals_categories[$i]];
          $text .= $tp->parseTemplate("{UJ_CATEGORY_LINK}", FALSE, $userjournals_shortcodes);
-
          if ($i<count($userjournals_categories)-1) {
             $text .= ", ";
          }
@@ -228,12 +228,12 @@ SC_BEGIN UJ_CATEGORY_LIST_HEADING
 SC_END
 
 SC_BEGIN UJ_CATEGORY_LINK
-   global $uj_category;
+   global $uj_category;  
    return "<a href='".e_PLUGIN."userjournals_menu/userjournals.php?cat.".$uj_category["userjournals_cat_id"]."'>".$uj_category["userjournals_cat_name"]."</a>";
 SC_END
 
 SC_BEGIN UJ_CATEGORY_MENU_LINK
-   global $uj_category;
+   global $uj_category;   
    return "<a href='".e_PLUGIN."userjournals_menu/userjournals.php?cat.".$uj_category["userjournals_cat_id"]."'>".$uj_category["userjournals_cat_name"]."</a>";
 SC_END
 
