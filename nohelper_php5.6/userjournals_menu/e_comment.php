@@ -19,4 +19,4 @@ $link_name        = "userjournals_subject";
 $db_id            = "userjournals_id";
 $plugin_name      = UJ1;
 
-?>
+ 

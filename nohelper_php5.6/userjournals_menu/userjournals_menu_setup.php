@@ -98,3 +98,27 @@ if(!class_exists("userjournals_menu_setup"))
 	}
 
 }
+
+/* help
+$plugPrefs = e107::getPlugPref('userjournals_menu');
+e107::pref('userjournals_menu', 'userjournals_active')
+e107::pref('userjournals_menu', 'userjournals_allowratings')
+e107::pref('userjournals_menu', 'userjournals_allowcomments')
+e107::pref('userjournals_menu', 'userjournals_bloggers_menu_max')
+e107::pref('userjournals_menu', 'userjournals_bloggers_per_page')
+e107::pref('userjournals_menu', 'userjournals_blogs_per_page'>')
+e107::pref('userjournals_menu', 'userjournals_cat_menu_title'>')
+e107::pref('userjournals_menu', 'userjournals_len_subject'>')
+e107::pref('userjournals_menu', 'userjournals_len_preview'>')
+e107::pref('userjournals_menu', 'userjournals_menu_title'>')
+e107::pref('userjournals_menu', 'userjournals_page_title'>')
+e107::pref('userjournals_menu', 'userjournals_readers')
+e107::pref('userjournals_menu', 'userjournals_recent_entries'>')
+e107::pref('userjournals_menu', 'userjournals_report_blog')
+e107::pref('userjournals_menu', 'userjournals_show_cats')
+e107::pref('userjournals_menu', 'userjournals_show_mood')
+e107::pref('userjournals_menu', 'userjournals_show_playing')
+e107::pref('userjournals_menu', 'userjournals_show_rss')
+e107::pref('userjournals_menu', 'userjournals_writers')
+e107::pref('userjournals_menu', 'userjournals_template')
+*/

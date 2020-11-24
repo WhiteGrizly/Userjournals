@@ -154,11 +154,13 @@ if (!class_exists("UserJournals")) {
       }
 
       function DefaultPage($start=1) {
-         global $plugPrefs, $sql, $tp, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
+         global $sql, $tp, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
  
-         $sql = new db();
-		 $text = "";
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
+		 $sql = new db();
 
+		 $text = "";
+		 
 		 $start = $start ? $start - 1 : 0;
 
          if ($plugPrefs["userjournals_bloggers_per_page"]) {
@@ -191,7 +193,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function BloggerPage($bloggerid, $bloggername, $start=1, $msg=false) {
-         global  $plugPrefs, $sql, $tp, $uj_message, $uj_synopsis, $userjournals_shortcodes, $UJ_MESSAGE, $UJ_BLOGGER_SYNOPSIS;
+         global $sql, $tp, $uj_message, $uj_synopsis, $userjournals_shortcodes, $UJ_MESSAGE, $UJ_BLOGGER_SYNOPSIS;
+
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          $caption = $plugPrefs["userjournals_page_title"].UJ25.$bloggername;
          $text = "";
@@ -232,9 +236,11 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogPage($blogid) {
-         global $plugPrefs, $sql;
-                             
-         if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
+		 global $sql;
+		 
+         $plugPrefs = e107::getPlugPref('userjournals_menu');                    
+		 
+		 if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
             $text = "";
             if ($row = $sql->fetch()){
                $text .= $this->GetBlog($row);
@@ -252,9 +258,11 @@ if (!class_exists("UserJournals")) {
       }
 
       function AllBlogsPage($start = 1 ) {
-         global $plugPrefs, $sql;
-         $caption = $plugPrefs["userjournals_page_title"];
+		 global $sql;
+		 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
+         $caption = $plugPrefs["userjournals_page_title"];
 		 $start = $start ? $start - 1 : 0;
          if ($plugPrefs["userjournals_blogs_per_page"]) {
 			$start =  $start * $plugPrefs["userjournals_blogs_per_page"];
@@ -276,15 +284,16 @@ if (!class_exists("UserJournals")) {
             $count = $sql->select("userjournals", "*", $qry );
             include_once(e_PLUGIN."userjournals_menu/handlers/np_class.php");
             $np = new nextprev();
-           // $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "allblogs", true);
+            $text .= $np->nextprev(e_SELF, $start, $plugPrefs["userjournals_blogs_per_page"], $count, "", "allblogs", true);
  
          }
          return array($caption, $text);
       }
 
       function GetBlog($blog, $limit=false) {
-         global  $plugPrefs, $tp, $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
+         global $tp, $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
          $uj_blog = $blog;  
          $uj_categories = $this->cats;   
          if ($limit) {        
@@ -298,8 +307,9 @@ if (!class_exists("UserJournals")) {
       function BlogAddEdit($blogid=false) {
 		 global   $sql ;
 
-		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 		 $frm = e107::getForm();
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
+		 
                   
          if (check_class($plugPrefs["userjournals_writers"])) {            
             $text = "<form action='".e_SELF."?save' method='post'>";
@@ -328,16 +338,14 @@ if (!class_exists("UserJournals")) {
             $text .= "<tr><td class='forumheader3'>".UJ62."</td>";
             $text .= "<td class='forumheader3'><input type='checkbox' class='tbox' name='journal_published' value='0' $checked/><span class='smalltext'>".UJ63."</span></td></tr>";
             
-            if ($plugPrefs["userjournals_show_cats"] != 0) {
+            if ($plugPrefs["userjournals_show_cats"] != 0) {  //multicheck
                $userjournals_categories = explode(",", $userjournals_categories);
                $text .= "<tr><td class='forumheader3'>".UJ91."</td>";
-               $text .= "<td class='forumheader3'><div class='search-checkboxes'>";
-               if ($sql->select("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", false)) {
-                  while ($row = $sql->fetch()) {
+			   $text .= "<td class='forumheader3'><div class='search-checkboxes'>";
+			   foreach($this->cats AS $row) {
                      extract($row);
                      $checked = in_array($userjournals_cat_id, $userjournals_categories) ? " checked='checked'" : "";
-                     $text .= "<span class='search-checkbox'><input type='checkbox' class='tbox' name='journal_cat[$userjournals_cat_id]' value='$userjournals_cat_id'$checked/>$userjournals_cat_name</span>";
-                  }
+                     $text .= "<span class='search-checkbox'><input type='checkbox' class='tbox' name='journal_cat[$userjournals_cat_id]' value='$userjournals_cat_id'$checked/>$userjournals_cat_name</span>"; 
                }
                $text .= "</div></td></tr>";
             }
@@ -349,7 +357,7 @@ if (!class_exists("UserJournals")) {
                         
             }
             if ($plugPrefs["userjournals_show_mood"] == 1) {
-               $text .= "<tr><td class='forumheader3'>".UJ42."</td><td class='forumheader3'><select class='tbox' name='journal_mood' size='1'>";
+               $text .= "<tr><td class='forumheader3'>".UJ42."</td><td class='forumheader3'><select class='tbox form-control' name='journal_mood' size='1'>";
                $keys = array_keys($this->mood);
                $selected = $userjournals_mood == "" ? " selected='selected'" : "";
                $text .= "<option value=''$selected></option>";
@@ -389,7 +397,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSave() {
-         global $plugPrefs ;
+
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
+
          // Only allow blog writers to save entries
          if (check_class($plugPrefs["userjournals_writers"])) {
             if ($_POST["journal_title"] != "" and $_POST["journal_entry"] != "") {
@@ -440,7 +450,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogUpdate($blogid) {
-         global $plugPrefs, $sql;
+         global $sql;
+
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          // Only allow blog writers to update entries
          if (check_class($plugPrefs["userjournals_writers"])) {
@@ -490,7 +502,10 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogDelete($blogid) {
-         global $sql,$plugPrefs;
+		 global $sql,$plugPrefs;
+		 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
+
          // Only allow blog writers to delete entries
          if (check_class($plugPrefs["userjournals_writers"]) || ADMIN) {
             // Make sure user is only deleting their own entries
@@ -517,8 +532,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsis() {
-         global  $pref, $plugPrefs, $sql;
+         global  $pref, $sql;
 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
          if (check_class($plugPrefs["userjournals_writers"])) {
             $text = "<form action='".e_SELF."?synopsissave' method='post'>";
 
@@ -554,7 +570,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsisSave() {
-         global $plugPrefs, $sql;
+         global $sql;
+
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          // Only allow blog writers to save a synopsis
          if (check_class($plugPrefs["userjournals_writers"])) {
@@ -598,7 +616,7 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsisUpdate() {
-         global $plugPrefs, $sql;
+         global $sql;
 
          // Only allow blog writers to update a synopsis
          if (check_class($plugPrefs["userjournals_writers"])) {
@@ -629,7 +647,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsisDelete() {
-         global $sql, $plugPrefs;
+         global $sql;
+
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          // Only allow blog writers to delete entries
          if (check_class($plugPrefs["userjournals_writers"])) {
@@ -648,7 +668,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function ReportPage($blogid, $msg=false) {
-         global   $plugPrefs, $sql;
+		 global $sql;
+		 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          if (USERID && $plugPrefs['userjournals_report_blog']) {
             $text = "<form action='".e_SELF."?reportit.$blogid' method='post'>";
@@ -677,7 +699,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function ReportItPage($blogid) {
-         global $plugPrefs, $sql, $tp;
+		 global $sql, $tp;
+		 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          if (USERID && $plugPrefs['userjournals_report_blog']) {
 	         if (isset($_POST['journal_report']) && strlen($_POST['journal_report']) > 0) {
@@ -713,11 +737,14 @@ if (!class_exists("UserJournals")) {
       }
 
       function GetReaderMenu($ns) {
-         global $plugPrefs, $sql, $tp, $uj_categories, $userjournals_shortcodes, $UJ_MENU_READER, $UJ_RSS;
-
-            $uj_categories = $this->cats;
+		 global $sql, $tp, $uj_categories, $userjournals_shortcodes, $UJ_MENU_READER, $UJ_RSS;
+		 
+		 	$plugPrefs = e107::getPlugPref('userjournals_menu');
+			
+			$uj_categories = $this->cats;
+			
             $text = $tp->parseTemplate($UJ_MENU_READER, FALSE, $userjournals_shortcodes);
-
+ 
             if (strlen($text) > 0) {
                $ns->tablerender($plugPrefs["userjournals_menu_title"], $text);
             } else {
@@ -730,9 +757,11 @@ if (!class_exists("UserJournals")) {
        * @param  class an instance of the e107table class
        */
       function GetWriterMenu($ns) {
-         global $plugPrefs, $sql, $tp, $userjournals_shortcodes, $UJ_MENU_WRITER;
- 
-         // Check if user is a UJ writer
+		 global  $sql, $tp, $userjournals_shortcodes, $UJ_MENU_WRITER;
+		 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
+		 
+		 // Check if user is a UJ writer
          if (check_class( e107::pref('userjournals_menu', 'userjournals_writers'))) {
             $gen2 = new convert;
 
@@ -743,7 +772,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function GetCategoriesMenu($ns) {
-         global $plugPrefs,  $tp, $uj_category, $userjournals_shortcodes;
+         global  $tp, $uj_category, $userjournals_shortcodes;
+
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          // Check if user is a UJ reader
          if (check_class($plugPrefs["userjournals_readers"]) || check_class($plugPrefs["userjournals_writers"])) {
@@ -766,7 +797,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function CategoryPage($catid, $msg=false) {
-         global   $plugPrefs, $sql;
+         global $sql;
+
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          $caption = $plugPrefs["userjournals_page_title"].UJ95.$this->cats[$catid]["userjournals_cat_name"];
          $cats_sql = "AND userjournals_categories='$catid' or userjournals_categories regexp '^$catid,' or userjournals_categories regexp ',$catid,' or userjournals_categories regexp ',$catid'";
@@ -789,8 +822,9 @@ if (!class_exists("UserJournals")) {
       }
 
       function AllCategoriesPage() {
-         global $plugPrefs, $sql, $tp, $uj_categories, $uj_category, $userjournals_shortcodes, $UJ_CATEGORY, $UJ_CATEGORY_LIST;
+		 global $sql, $tp, $uj_categories, $uj_category, $userjournals_shortcodes, $UJ_CATEGORY, $UJ_CATEGORY_LIST;
 
+		 $plugPrefs = e107::getPlugPref('userjournals_menu');
 
          $caption = $plugPrefs["userjournals_page_title"]." : ".UJ91;
          $keys = array_keys($this->cats);
