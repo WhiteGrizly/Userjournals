@@ -121,4 +121,7 @@ e107::pref('userjournals_menu', 'userjournals_show_playing')
 e107::pref('userjournals_menu', 'userjournals_show_rss')
 e107::pref('userjournals_menu', 'userjournals_writers')
 e107::pref('userjournals_menu', 'userjournals_template')
+
+e107::redirect(e_PLUGIN."userjournals_menu/userjournals.php?blog.".$blogid);
+
 */
