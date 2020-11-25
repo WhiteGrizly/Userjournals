@@ -836,9 +836,11 @@ if (!class_exists("UserJournals")) {
          $caption = $this->plugPrefs["userjournals_page_title"].UJ95.$this->cats[$catid]["userjournals_cat_name"];
          $cats_sql = "AND userjournals_categories='$catid' or userjournals_categories regexp '^$catid,' or userjournals_categories regexp ',$catid,' or userjournals_categories regexp ',$catid'";
 
-         if (e107::getDb()->select("userjournals", "*", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 $cats_sql ORDER BY userjournals_timestamp DESC")){
+		 $results = e107::getDb()->retrieve("userjournals", "*", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 $cats_sql ORDER BY userjournals_timestamp DESC", true);
+
+         if ($results) {
             $text = "";
-            while ($row = e107::getDb()->fetch()){
+            foreach($results AS $row) {
                $text .= $this->GetBlog($row, $this->plugPrefs["userjournals_len_preview"])."<br/>";
             }
          } else {
