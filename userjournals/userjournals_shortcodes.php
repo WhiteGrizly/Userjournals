@@ -294,9 +294,10 @@ SC_BEGIN UJ_MENU_READER_BLOGGERS
       $limit = "";
       if (isset($plugPrefs["userjournals_bloggers_menu_max"]) && $plugPrefs["userjournals_bloggers_menu_max"] > 0) {
          $limit = "limit ".$plugPrefs["userjournals_bloggers_menu_max"];
-      }
-      if ($count = e107::getDb()->db_Select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by id order by ts desc $limit")){
-         while($uj_blog = e107::getDb()->fetch()) {
+	  }
+	  $results = e107::getDb()->retrieve("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by id order by ts desc $limit", true);
+	  if($results) {
+		  foreach($results AS $row) {
             $text .= e107::getParser()->parseTemplate("{UJ_BLOGGER_MENU_LINK}", FALSE, $userjournals_shortcodes);
          }
       } else {
@@ -346,12 +347,14 @@ SC_BEGIN UJ_MENU_WRITER_RECENT
  
    $text ="";
    $plugPrefs = e107::getPlugPref('userjournals');
-   if (e107::getDb()->db_Select("userjournals", "*", "userjournals_userid='".USERID."' AND userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC LIMIT ".$plugPrefs["userjournals_recent_entries"])){
-      while($row = e107::getDb()->db_Fetch()){
+   $limit = $plugPrefs["userjournals_recent_entries"];
+   $results = e107::getDb()->retrieve("userjournals", "*", "userjournals_userid='".USERID."' AND userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC LIMIT ".$limit, true);
+   if($results) {
+	foreach($results AS $row) {
          extract($row);
          if (strlen($userjournals_subject) > $plugPrefs["userjournals_len_subject"]){
             $userjournals_subject = substr($userjournals_subject,0,$plugPrefs["userjournals_len_subject"])." ...";
-         }                                                                                                                                                   
+         }                                                                                                                                                
          $text .= "&bull;<a href='".e_PLUGIN_ABS."userjournals/userjournals.php?blog.$userjournals_id'>$userjournals_subject</a><br/>";
          $text .= "<div style='padding-left:8px;'>".e107::getDate()->convert_date($userjournals_timestamp, "short")."</div>";                         
       }
@@ -367,8 +370,12 @@ SC_BEGIN UJ_MENU_WRITER_UNPUBLISHED
    $plugPrefs = e107::getPlugPref('userjournals');
  
    $text ="";
-   if (e107::getDb()->select("userjournals", "*", "userjournals_userid='".USERID."' AND userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=1 ORDER BY userjournals_timestamp DESC LIMIT ".$plugPrefs["userjournals_recent_entries"])){
-      while($row = e107::getDb()->fetch()){
+   $limit = $plugPrefs["userjournals_recent_entries"];
+
+   $results =  e107::getDb()->retrieve("userjournals", "*", "userjournals_userid='".USERID."' AND userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=1 ORDER BY userjournals_timestamp DESC LIMIT ".$limi, true);
+   
+   if($results) {
+	  foreach($results AS $row) {
          extract($row);
          if (strlen($userjournals_subject) > $plugPrefs["userjournals_len_subject"]){
             $userjournals_subject = substr($userjournals_subject,0,$plugPrefs["userjournals_len_subject"])." ...";
