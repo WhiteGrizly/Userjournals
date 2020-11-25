@@ -1,7 +1,7 @@
 <?php
 if (!defined('e107_INIT')) { exit; }
 include_once(e_HANDLER.'shortcode_handler.php');
-global $tp;
+$tp = e107::getParser();
 
 if (!isset($tp)) {
    $tp = new e_parse();
@@ -175,7 +175,7 @@ SC_BEGIN UJ_BLOG_ENTRY
 SC_END
 
 SC_BEGIN UJ_BLOG_ENTRY_SHORT
-   global$tp, $uj_blog;
+   global   $uj_blog;
    $text = e107::getParser()->toHTML($uj_blog["userjournals_entry"], TRUE, 'DESCRIPTION');
    $text = e107::getParser()->html_truncate($text, e107::pref('userjournals_menu', 'userjournals_len_preview'>'), "...");
    return $text;
@@ -255,7 +255,7 @@ SC_BEGIN UJ_CATEGORY_ICON
 SC_END
 
 SC_BEGIN UJ_MENU_READER
-   global $sql, $tp, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGER_LIST;
+   global $sql,  $uj_blog, $userjournals_shortcodes, $UJ_BLOGGER_LIST;
    $text = "";
    $plugPrefs = e107::pref('userjournals_menu');
    if (check_class($plugPrefs["userjournals_readers"]) || check_class($plugPrefs["userjournals_writers"])) {
@@ -269,7 +269,7 @@ SC_BEGIN UJ_MENU_READER
 SC_END
 
 SC_BEGIN UJ_MENU_READER_CATEGORIES
-   global $sql, $tp, $uj_categories, $uj_category, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGER_LIST;
+   global $sql,  $uj_categories, $uj_category, $uj_blog, $userjournals_shortcodes, $UJ_BLOGGER_LIST;
    $text = "";
    $plugPrefs = e107::pref('userjournals_menu');
    if (check_class($plugPrefs["userjournals_readers"]) || check_class($plugPrefs["userjournals_writers"])) {
@@ -277,7 +277,7 @@ SC_BEGIN UJ_MENU_READER_CATEGORIES
          $keys = array_keys($uj_categories);
          foreach ($keys as $key) {
             $uj_category = $uj_categories[$key];
-            $text .= $tp->parseTemplate("{UJ_CATEGORY_MENU_LINK}", FALSE, $userjournals_shortcodes);
+            $text .= e107::getParser()->parseTemplate("{UJ_CATEGORY_MENU_LINK}", FALSE, $userjournals_shortcodes);
          }
       }
    }
@@ -285,7 +285,7 @@ SC_BEGIN UJ_MENU_READER_CATEGORIES
 SC_END
 
 SC_BEGIN UJ_MENU_READER_BLOGGERS
-   global $tp, $uj_blog, $userjournals_shortcodes;
+   global   $uj_blog, $userjournals_shortcodes;
    $sql2 = new db();
    $text = "";
    $plugPrefs = e107::pref('userjournals_menu');
@@ -296,7 +296,7 @@ SC_BEGIN UJ_MENU_READER_BLOGGERS
       }
       if ($count = $sql2->db_Select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by id order by ts desc $limit")){
          while($uj_blog = $sql2->fetch()) {
-            $text .= $tp->parseTemplate("{UJ_BLOGGER_MENU_LINK}", FALSE, $userjournals_shortcodes);
+            $text .= e107::getParser()->parseTemplate("{UJ_BLOGGER_MENU_LINK}", FALSE, $userjournals_shortcodes);
          }
       } else {
          $text .= " ".UJ28;
@@ -306,12 +306,12 @@ SC_BEGIN UJ_MENU_READER_BLOGGERS
 SC_END
 
 SC_BEGIN UJ_RSS
-   global $tp, $userjournals_shortcodes;
+   global  $userjournals_shortcodes;
    $text = "";
    if (e107::pref('userjournals_menu', 'userjournals_show_rss') == 1) {
-      $text .= $tp->parseTemplate("{UJ_RSS_1}", FALSE, $userjournals_shortcodes);
-      $text .= $tp->parseTemplate("{UJ_RSS_2}", FALSE, $userjournals_shortcodes);
-      $text .= $tp->parseTemplate("{UJ_RSS_3}", FALSE, $userjournals_shortcodes);
+      $text .= e107::getParser()->parseTemplate("{UJ_RSS_1}", FALSE, $userjournals_shortcodes);
+      $text .= e107::getParser()->parseTemplate("{UJ_RSS_2}", FALSE, $userjournals_shortcodes);
+      $text .= e107::getParser()->parseTemplate("{UJ_RSS_3}", FALSE, $userjournals_shortcodes);
    }
    return $text;
 SC_END
@@ -329,7 +329,7 @@ SC_BEGIN UJ_RSS_3
 SC_END
 
 SC_BEGIN UJ_MENU_WRITER_OPTIONS
-   global $sql, $tp, $uj_blog, $userjournals_shortcodes;
+   global $sql,   $uj_blog, $userjournals_shortcodes;
    $text = "";     
    $plugPrefs = e107::getPlugPref('userjournals_menu');
    if (check_class($plugPrefs["userjournals_writers"])) {
@@ -341,7 +341,7 @@ SC_BEGIN UJ_MENU_WRITER_OPTIONS
 SC_END
 
 SC_BEGIN UJ_MENU_WRITER_RECENT
-   global $sql, $tp, $uj_blog, $userjournals_shortcodes;
+   global $sql,   $uj_blog, $userjournals_shortcodes;
  
    $text ="";
    $plugPrefs = e107::getPlugPref('userjournals_menu');
@@ -362,7 +362,7 @@ SC_END
 
 
 SC_BEGIN UJ_MENU_WRITER_UNPUBLISHED
-   global $sql, $tp, $uj_blog, $userjournals_shortcodes;
+   global $sql,  $uj_blog, $userjournals_shortcodes;
    $plugPrefs = e107::getPlugPref('userjournals_menu');
  
    $text ="";
