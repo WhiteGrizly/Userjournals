@@ -31,8 +31,7 @@ SC_END
 
 SC_BEGIN UJ_BLOGGER_TIMESTAMP
    global $uj_blog;
-   $gen2 = new convert();
-   return $gen2->convert_date($uj_blog["userjournals_timestamp"], "long");
+   return e107::getDate()->convert_date($uj_blog["userjournals_timestamp"], "long");
 SC_END
 
 SC_BEGIN UJ_BLOGGER_LINK
@@ -42,10 +41,10 @@ SC_END
 
 SC_BEGIN UJ_BLOGGER_MENU_LINK
    global $uj_blog;
-   $gen2 = new convert();
+ 
    //if ($row = getx_user_data($uj_blog["userjournals_userid"])) {
    if ($row = e107::user($uj_blog["userjournals_userid"])) {
-      return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".$row["user_name"]."</a><br/>".$gen2->convert_date($uj_blog["userjournals_timestamp"], "short");
+      return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".$row["user_name"]."</a><br/>".e107::getDate()->convert_date($uj_blog["userjournals_timestamp"], "short");
    }
    return "";
 SC_END
@@ -91,13 +90,12 @@ SC_END
 
 SC_BEGIN UJ_BLOG_DATE
    global $uj_blog;
-   $gen2 = new convert();
    $text = "";
    parse_str($parm, $parms);
    if (array_key_exists("label", $parms)) {
       $text .= UJ46;
-   }
-   $text .= $gen2->convert_date($uj_blog["userjournals_timestamp"], "short");
+   }  
+   $text .=  e107::getDate()->convert_date($uj_blog["userjournals_timestamp"], "short")  
    return $text;
 SC_END
 
@@ -344,7 +342,7 @@ SC_END
 
 SC_BEGIN UJ_MENU_WRITER_RECENT
    global $sql, $tp, $uj_blog, $userjournals_shortcodes;
-   $gen2 = new convert;
+ 
    $text ="";
    $plugPrefs = e107::getPlugPref('userjournals_menu');
    if ($sql->db_Select("userjournals", "*", "userjournals_userid='".USERID."' AND userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC LIMIT ".$plugPrefs["userjournals_recent_entries"])){
@@ -354,7 +352,7 @@ SC_BEGIN UJ_MENU_WRITER_RECENT
             $userjournals_subject = substr($userjournals_subject,0,$plugPrefs["userjournals_len_subject"])." ...";
          }                                                                                                                                                   
          $text .= "&bull;<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blog.$userjournals_id'>$userjournals_subject</a><br/>";
-         $text .= "<div style='padding-left:8px;'>".$gen2->convert_date($userjournals_timestamp, "short")."</div>";
+         $text .= "<div style='padding-left:8px;'>".e107::getDate()->convert_date($userjournals_timestamp, "short")."</div>";                         
       }
    } else {
       $text .= UJ28."<br/>";
@@ -366,7 +364,7 @@ SC_END
 SC_BEGIN UJ_MENU_WRITER_UNPUBLISHED
    global $sql, $tp, $uj_blog, $userjournals_shortcodes;
    $plugPrefs = e107::getPlugPref('userjournals_menu');
-   $gen2 = new convert;
+ 
    $text ="";
    if ($sql->db_Select("userjournals", "*", "userjournals_userid='".USERID."' AND userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=1 ORDER BY userjournals_timestamp DESC LIMIT ".$plugPrefs["userjournals_recent_entries"])){
       while($row = $sql->db_Fetch()){
@@ -375,7 +373,7 @@ SC_BEGIN UJ_MENU_WRITER_UNPUBLISHED
             $userjournals_subject = substr($userjournals_subject,0,$plugPrefs["userjournals_len_subject"])." ...";
          }
          $text .= "&bull;<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?edit.$userjournals_id'>$userjournals_subject</a><br/>";
-         $text .= "<div style='padding-left:8px;'>".$gen2->convert_date($userjournals_timestamp, "short")."</div>";
+         $text .= "<div style='padding-left:8px;'>".e107::getDate()->convert_date($userjournals_timestamp, "short")."</div>";   
       }
    } else {
       $text .= UJ67;

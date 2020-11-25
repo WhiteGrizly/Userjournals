@@ -5,8 +5,6 @@ $text .= ujSearch();
 function ujSearch() {
    global $search_info, $key, $query;
    $sql = new db();
-   $gen2 = new convert;
-   
    $plugPrefs = e107::getPlugConfig('userjournals_menu');
 
    $nothingfound = true;
@@ -18,7 +16,8 @@ function ujSearch() {
       $nothingfound = false;
       while($row = $sql -> db_Fetch()){
          extract($row);
-         $que = parsesearch($userjournals_subject, $query)." (".$gen2->convert_date($userjournals_timestamp, "short").")";
+         $time = e107::getDate()->convert_date($userjournals_timestamp, "short");
+         $que = parsesearch($userjournals_subject, $query)." (".$time.")";
          $ans = parsesearch($userjournals_entry, $query);
          if (eregi($query, $userjournals_subject)) {
             $text .= $linkprefix."blog.$userjournals_id\">$que</a></b><br /><span class=\"smalltext\">".UJ57."</span><br />$ans<br /><br />";

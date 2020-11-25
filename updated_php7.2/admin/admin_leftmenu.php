@@ -61,7 +61,12 @@ class leftmenu_adminArea extends e_admin_dispatcher
 			'uipath' 		=> null
 		),
 		
-
+		'synopsis'	=> array(
+			'controller' 	=> 'userjournals_synopsis_ui',
+			'path' 			=> null,
+			'ui' 			=> 'userjournals_form_ui',
+			'uipath' 		=> null
+		),
 	);	
 
     protected $adminMenu = array(
@@ -72,6 +77,9 @@ class leftmenu_adminArea extends e_admin_dispatcher
 		'main/list'			=> array('caption'=> UJ8, 'perm' => 'P'),
 		'main/create'		=> array('caption'=> UJ10, 'perm' => 'P'),
 	
+		'synopsis/list'		=> array('caption'=> UJ52, 'perm' => 'P'),
+	//	'synopsis/create'	=> array('caption'=> UJ10, 'perm' => 'P'),
+
 		'main/prefs' 		=> array('caption'=> LAN_JOURNAL_MENU_00, 'perm' => 'P'),	
 
 		'main/div0'      	=> array('divider'=> true),

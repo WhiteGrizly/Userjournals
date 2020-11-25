@@ -460,9 +460,7 @@ if (!class_exists("UserJournals")) {
                $journal_cats        = varset($journal_cats, '');
                
                $thetime = time();
-               $gen2 = new convert();
-               $thedate = $gen2->convert_date($thetime, "forum");
-              
+               $thedate = e107::getDate()->convert_date($thetime, "forum");
                $the_sql = array(
                     'userjournals_id'                => NULL,
         		    'userjournals_userid'            => USERID,        
@@ -524,8 +522,7 @@ if (!class_exists("UserJournals")) {
 
                if ($_POST["journal_update_date"]) {
                   $thetime = time();
-                  $gen2 = new convert;
-                  $thedate = $gen2->convert_date($thetime, "forum");
+                  $thedate = e107::getDate()->convert_date($thetime, "forum");
                   $datesql = ", userjournals_timestamp='$thetime$'";
                } else {
                   $datesql = "";
@@ -630,8 +627,7 @@ if (!class_exists("UserJournals")) {
                $journal_synopsis = $tp->toDB($_POST['journal_synopsis']);
 
                $thetime = time();
-               $gen2 = new convert;
-               $thedate = $gen2->convert_date($thetime, "forum");
+               $thedate = e107::getDate()->convert_date($thetime, "forum");
       
                $the_sql =  array(
         		    'userjournals_id'                => NULL,
@@ -681,8 +677,7 @@ if (!class_exists("UserJournals")) {
                $journal_synopsis = $tp->toDB($_POST['journal_synopsis']);
 
                $thetime = time();
-               $gen2 = new convert;
-               $thedate = $gen2->convert_date($thetime, "forum");
+               $thedate = e107::getDate()->convert_date($thetime, "forum");
 
                $the_sql = "userjournals_entry='$journal_synopsis', userjournals_date='$thedate', userjournals_timestamp='$thetime' where userjournals_userid=".USERID." and userjournals_is_blog_desc=1";
                if ($sql->db_Update('userjournals', $the_sql)){
@@ -824,7 +819,6 @@ if (!class_exists("UserJournals")) {
 
 		 // Check if user is a UJ writer
          if (check_class( e107::pref('userjournals_menu', 'userjournals_writers'))) {
-            $gen2 = new convert;
             $text = $tp->parseTemplate($UJ_MENU_WRITER, FALSE, $userjournals_shortcodes);
             $ns->tablerender(UJ39.$plugPrefs["userjournals_menu_title"], $text);
          }

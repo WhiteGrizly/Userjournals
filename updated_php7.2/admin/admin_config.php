@@ -32,8 +32,7 @@ class userjournals_ui extends e_admin_ui
 	//	protected $treePrefix      = 'somefield_title';
 
 	//	protected $tabs				= array('Tabl 1','Tab 2'); // Use 'tab'=>0  OR 'tab'=>1 in the $fields below to enable. 
-		
-	//	protected $listQry      	= "SELECT * FROM `#tableName` WHERE field != '' "; // Example Custom Query. LEFT JOINS allowed. Should be without any Order or Limit.
+ 
 	
 		protected $listOrder		= 'userjournals_id DESC';
 	
@@ -54,17 +53,17 @@ class userjournals_ui extends e_admin_ui
 			
 			'userjournals_entry'      => array (  'title' => UJ7,  'type' => 'bbarea',  'data' => 'str',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
-			'userjournals_date'       => array (  'title' => UJ96,  'type' => 'text',  'data' => 'str',  'width' => 'auto',  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
+			'userjournals_date'       => array (  'title' => UJ96,  'type' => false,    'data' => 'str',  'width' => 'auto',  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
-			'userjournals_timestamp'  => array (  'title' => 'Timestamp',  'type' => 'text',  'data' => 'str',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
+			'userjournals_timestamp'  => array (  'title' => 'Timestamp',  'type' => false,   'data' => 'str',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
-			'userjournals_is_comment' => array (  'title' => 'Is Comment',  'type' => 'boolean',  'data' => 'int',  'width' => '40%',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
+			/* 'userjournals_is_comment' => array (  'title' => 'Is Comment',  'type' => 'boolean',  'data' => 'int',  'width' => '40%',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
-			/*
+			
 			'userjournals_comment_parent'=> array (  'title' => 'Parent',  'type' => 'number',  'data' => 'int',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
-			*/
+			
 			'userjournals_is_blog_desc'=> array (  'title' => 'Is Description',  'type' => 'boolean',  'data' => 'int',  'width' => 'auto',  'batch' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
-
+			*/
 
 
 			'options'                 => array (  'title' => LAN_OPTIONS,  'type' => null,  'data' => null,  'width' => '10%',  'thclass' => 'center last',  'class' => 'center last',  'forced' => true,  'readParms' =>  array (),  'writeParms' =>  array (),),
@@ -120,7 +119,14 @@ class userjournals_ui extends e_admin_ui
 
 		); 
 
+		public function __construct($request, $response, $params = array())
+		{
+			parent::__construct($request, $response, $params = array());
 	
+			$this->listQry      	= "SELECT * FROM `#".$this->table."` WHERE userjournals_is_blog_desc = '0' ";  
+		}
+		
+		
 		public function init()
 		{
  
@@ -211,6 +217,10 @@ class userjournals_ui extends e_admin_ui
 		
 		public function beforeCreate($new_data,$old_data)
 		{
+			$thetime = time();
+			$new_data['userjournals_timestamp'] = $thetime;
+			$new_data['userjournals_date'] = e107::getDate()->convert_date($thetime, "forum");
+				  
 			return $new_data;
 		}
 	
@@ -302,9 +312,22 @@ class userjournals_ui extends e_admin_ui
 class userjournals_form_ui extends e_admin_form_ui
 {
 
-}		
-		
+}	
 
+
+class userjournals_synopsis_ui extends userjournals_ui
+{	
+		
+	public function __construct($request, $response, $params = array())
+	{
+
+		parent::__construct($request, $response, $params = array());
+
+		$this->listQry      	= "SELECT * FROM `#".$this->table."` WHERE userjournals_is_blog_desc > '0' ";  
+	}
+
+ 
+}
 				
 class userjournals_categories_ui extends e_admin_ui
 {
