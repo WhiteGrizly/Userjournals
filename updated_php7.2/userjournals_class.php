@@ -506,7 +506,7 @@ if (!class_exists("UserJournals")) {
                $journal_playing  = e107::getParser()->toDB($_POST['journal_playing']);
                $journal_mood     = e107::getParser()->toDB($_POST['journal_mood']);
                $journal_entry    = e107::getParser()->toDB($_POST['journal_entry']);
-               $journal_cats     = $_POST["journal_cat"];
+               $journal_cats     = e107::getParser()->toDB($_POST["journal_cat"]);
                $journal_cats     = implode(",", $journal_cats);
 
                if ($_POST["journal_update_date"]) {
