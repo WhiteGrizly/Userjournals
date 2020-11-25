@@ -17,17 +17,17 @@
 
    // Check that the viewing journals is allowed
    if (!check_class(e107::pref('userjournals_menu', 'userjournals_readers') ) && !check_class(e107::pref('userjournals_menu', 'userjournals_writers') ) ) {
-      header("location:../../index.php");
+      header("location:../../index.php"); //fix
       exit;
    }
 
    require_once(HEADERF);
+  
    // waiting for shortcodes ?
    //$global_userJournals = e107::getSingleton('UserJournals', e_PLUGIN.'userjournals_menu/userjournals_class.php');
-   
-   require_once(HEADERF);
-   
+ 
    require_once(e_PLUGIN.'userjournals_menu/userjournals_class.php');
+
    $global_userJournals = new UserJournals(true);
    $global_userJournals->render();
    require_once(FOOTERF);

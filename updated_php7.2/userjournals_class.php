@@ -836,7 +836,7 @@ if (!class_exists("UserJournals")) {
          if (check_class($plugPrefs["userjournals_readers"]) || check_class($plugPrefs["userjournals_writers"])) {
             if ($plugPrefs["userjournals_show_cats"] == 2) {
                if (count($this->cats) > 0) {
-                  $text = "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?allcats'>".UJ92."</a><br/><br/>";
+                  $text = "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?allcats'>".UJ92."</a><br/><br/>";
                   $text .= "<strong>".UJ91."</strong>";
 				  $keys = array_keys($this->cats);  
                   foreach ($keys as $key) {    

@@ -36,7 +36,7 @@ SC_END
 
 SC_BEGIN UJ_BLOGGER_LINK
    global $uj_blog;
-   return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".UJ90."</a>";
+   return "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".UJ90."</a>";
 SC_END
 
 SC_BEGIN UJ_BLOGGER_MENU_LINK
@@ -44,7 +44,7 @@ SC_BEGIN UJ_BLOGGER_MENU_LINK
  
    //if ($row = getx_user_data($uj_blog["userjournals_userid"])) {
    if ($row = e107::user($uj_blog["userjournals_userid"])) {
-      return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".$row["user_name"]."</a><br/>".e107::getDate()->convert_date($uj_blog["userjournals_timestamp"], "short");
+      return "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".$row["user_name"]."</a><br/>".e107::getDate()->convert_date($uj_blog["userjournals_timestamp"], "short");
    }
    return "";
 SC_END
@@ -71,7 +71,7 @@ SC_END
 
 SC_BEGIN UJ_BLOG_LINK
    global $uj_blog;
-   return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blog.".$uj_blog["userjournals_id"]."'>".UJ48."</a>";
+   return "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?blog.".$uj_blog["userjournals_id"]."'>".UJ48."</a>";
 SC_END
 
 SC_BEGIN UJ_BLOG_MOOD
@@ -84,7 +84,7 @@ SC_BEGIN UJ_BLOG_MOOD
 SC_END
 
 SC_BEGIN UJ_BLOG_SUBJECT
-   global $uj_blog;
+   global $uj_blog;               
    return $uj_blog["userjournals_subject"];
 SC_END
 
@@ -138,7 +138,7 @@ SC_BEGIN UJ_BLOG_EDIT_LINK
    global $uj_blog;
    $text = "";
    if ($uj_blog["userjournals_userid"] == USERID) {
-      $text .= "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?edit.".$uj_blog["userjournals_id"]."'>".UJ4."</a>";
+      $text .= "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?edit.".$uj_blog["userjournals_id"]."'>".UJ4."</a>";
    }
    return $text;
 SC_END
@@ -147,7 +147,7 @@ SC_BEGIN UJ_BLOG_DELETE_LINK
    global $uj_blog;
    $text = "";
    if ($uj_blog["userjournals_userid"] == USERID || ADMIN) {
-      $text .= "<a href='#' onclick='UJConfirmDelete(\"".UJ60."\", \"".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?delete.".$uj_blog["userjournals_id"]."\");'>".UJ19."</a>";
+      $text .= "<a href='#' onclick='UJConfirmDelete(\"".UJ60."\", \"".e_PLUGIN_ABS."userjournals_menu/userjournals.php?delete.".$uj_blog["userjournals_id"]."\");'>".UJ19."</a>";
    }
    return $text;
 SC_END
@@ -156,7 +156,7 @@ SC_BEGIN UJ_BLOG_REPORT_LINK
    global $uj_blog;
    $text = "";
    if (USERID && e107::pref('userjournals_menu', 'userjournals_report_blog')) {
-      $text .= "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?report.".$uj_blog["userjournals_id"]."'>".UJ101."</a>";
+      $text .= "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?report.".$uj_blog["userjournals_id"]."'>".UJ101."</a>";
    }
    return $text;
 SC_END
@@ -165,7 +165,7 @@ SC_BEGIN UJ_BLOG_BLOGGER_LINK
    global $uj_blog;
    //$user = getx_user_data($uj_blog["userjournals_userid"]);
    $user = e107::user($uj_blog["userjournals_userid"]);
-   return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".$user["user_name"]." ".UJ1."</a>";
+   return "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?blogger.".$uj_blog["userjournals_userid"]."'>".$user["user_name"]." ".UJ1."</a>";
 SC_END
 
 SC_BEGIN UJ_BLOG_ENTRY
@@ -229,12 +229,12 @@ SC_END
 
 SC_BEGIN UJ_CATEGORY_LINK
    global $uj_category;  
-   return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?cat.".$uj_category["userjournals_cat_id"]."'>".$uj_category["userjournals_cat_name"]."</a>";
+   return "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?cat.".$uj_category["userjournals_cat_id"]."'>".$uj_category["userjournals_cat_name"]."</a>";
 SC_END
 
 SC_BEGIN UJ_CATEGORY_MENU_LINK
    global $uj_category;   
-   return "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?cat.".$uj_category["userjournals_cat_id"]."'>".$uj_category["userjournals_cat_name"]."</a>";
+   return "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?cat.".$uj_category["userjournals_cat_id"]."'>".$uj_category["userjournals_cat_name"]."</a>";
 SC_END
 
 SC_BEGIN UJ_CATEGORY_START
@@ -259,10 +259,10 @@ SC_BEGIN UJ_MENU_READER
    $text = "";
    $plugPrefs = e107::pref('userjournals_menu');
    if (check_class($plugPrefs["userjournals_readers"]) || check_class($plugPrefs["userjournals_writers"])) {
-      $text .= "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?allblogs'>".UJ61."</a><br/>";
-      $text .= "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php'>".UJ50."</a><br/>";
+      $text .= "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?allblogs'>".UJ61."</a><br/>";
+      $text .= "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php'>".UJ50."</a><br/>";
       if ($plugPrefs["userjournals_show_cats"] == 1) {
-         $text .= "<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?allcats'>".UJ92."</a><br/>";
+         $text .= "<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?allcats'>".UJ92."</a><br/>";
       }
    }
    return $text;
@@ -317,15 +317,15 @@ SC_BEGIN UJ_RSS
 SC_END
 
 SC_BEGIN UJ_RSS_1
-   return "<a href='".SITEURL.e_PLUGIN."rss_menu/rss.php?userjournals.1'><img src='".e_PLUGIN_ABS."rss_menu/images/rss1.png' alt='rss1'/></a>";
+   return "<a href='".e_PLUGIN_ABS."rss_menu/rss.php?userjournals.1'><img src='".e_PLUGIN_ABS."rss_menu/images/rss1.png' alt='rss1'/></a>";
 SC_END
 
 SC_BEGIN UJ_RSS_2
-   return "<a href='".SITEURL.e_PLUGIN."rss_menu/rss.php?userjournals.2'><img src='".e_PLUGIN_ABS."rss_menu/images/rss2.png' alt='rss2'/></a>";
+   return "<a href='".e_PLUGIN_ABS."rss_menu/rss.php?userjournals.2'><img src='".e_PLUGIN_ABS."rss_menu/images/rss2.png' alt='rss2'/></a>";
 SC_END
 
 SC_BEGIN UJ_RSS_3
-   return "<a href='".SITEURL.e_PLUGIN."rss_menu/rss.php?userjournals.3'><img src='".e_PLUGIN_ABS."rss_menu/images/rss3.png' alt='rdf'/></a>";
+   return "<a href='".e_PLUGIN_ABS."rss_menu/rss.php?userjournals.3'><img src='".e_PLUGIN_ABS."rss_menu/images/rss3.png' alt='rdf'/></a>";
 SC_END
 
 SC_BEGIN UJ_MENU_WRITER_OPTIONS
@@ -333,9 +333,9 @@ SC_BEGIN UJ_MENU_WRITER_OPTIONS
    $text = "";     
    $plugPrefs = e107::getPlugPref('userjournals_menu');
    if (check_class($plugPrefs["userjournals_writers"])) {
-      $text .= "&bull;<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blogger.".USERID."'>".UJ11."</a><br/>";
-      $text .= "&bull;<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?add'>".UJ10."</a><br/>";
-      $text .= "&bull;<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?synopsis'>".UJ52."</a><br/>";
+      $text .= "&bull;<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?blogger.".USERID."'>".UJ11."</a><br/>";
+      $text .= "&bull;<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?add'>".UJ10."</a><br/>";
+      $text .= "&bull;<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?synopsis'>".UJ52."</a><br/>";
    }
    return $text;
 SC_END
@@ -351,7 +351,7 @@ SC_BEGIN UJ_MENU_WRITER_RECENT
          if (strlen($userjournals_subject) > $plugPrefs["userjournals_len_subject"]){
             $userjournals_subject = substr($userjournals_subject,0,$plugPrefs["userjournals_len_subject"])." ...";
          }                                                                                                                                                   
-         $text .= "&bull;<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?blog.$userjournals_id'>$userjournals_subject</a><br/>";
+         $text .= "&bull;<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?blog.$userjournals_id'>$userjournals_subject</a><br/>";
          $text .= "<div style='padding-left:8px;'>".e107::getDate()->convert_date($userjournals_timestamp, "short")."</div>";                         
       }
    } else {
@@ -372,7 +372,7 @@ SC_BEGIN UJ_MENU_WRITER_UNPUBLISHED
          if (strlen($userjournals_subject) > $plugPrefs["userjournals_len_subject"]){
             $userjournals_subject = substr($userjournals_subject,0,$plugPrefs["userjournals_len_subject"])." ...";
          }
-         $text .= "&bull;<a href='".SITEURL.e_PLUGIN."userjournals_menu/userjournals.php?edit.$userjournals_id'>$userjournals_subject</a><br/>";
+         $text .= "&bull;<a href='".e_PLUGIN_ABS."userjournals_menu/userjournals.php?edit.$userjournals_id'>$userjournals_subject</a><br/>";
          $text .= "<div style='padding-left:8px;'>".e107::getDate()->convert_date($userjournals_timestamp, "short")."</div>";   
       }
    } else {

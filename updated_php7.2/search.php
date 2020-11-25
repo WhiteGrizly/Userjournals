@@ -5,10 +5,11 @@ $text .= ujSearch();
 function ujSearch() {
    global $search_info, $key, $query;
    $sql = new db();
-   $plugPrefs = e107::getPlugConfig('userjournals_menu');
+
+   $plugPrefs = e107::pref('userjournals_menu');
 
    $nothingfound = true;
-   $linkprefix = "<img src=\"".THEME."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"".e_PLUGIN."userjournals_menu/userjournals.php?";
+   $linkprefix = "<img src=\"".THEME_ABS."images/bullet2.gif\" alt=\"bullet\" /> <b><a href=\"".e_PLUGIN_ABS."userjournals_menu/userjournals.php?";
 
    $search_info[$key]['qtype'] = $plugPrefs["userjournals_page_title"];
 
@@ -19,10 +20,10 @@ function ujSearch() {
          $time = e107::getDate()->convert_date($userjournals_timestamp, "short");
          $que = parsesearch($userjournals_subject, $query)." (".$time.")";
          $ans = parsesearch($userjournals_entry, $query);
-         if (eregi($query, $userjournals_subject)) {
+		 if (preg_match('/'.$query.'/i', $userjournals_subject, $matches)) {
             $text .= $linkprefix."blog.$userjournals_id\">$que</a></b><br /><span class=\"smalltext\">".UJ57."</span><br />$ans<br /><br />";
-         }
-         if (eregi($query, $userjournals_entry)) {
+		 }
+		 if (preg_match('/'.$query.'/i', $userjournals_entry, $matches)) {
             $text .= $linkprefix."blog.$userjournals_id\">$que</a></b><br /><span class=\"smalltext\">".UJ58."</span><br />$ans<br /><br />";
          }
       }
@@ -32,7 +33,7 @@ function ujSearch() {
       $nothingfound = false;
       while($row = $sql -> db_Fetch()){
          extract($row);
-         $que = parsesearch($userjournals_username, $query)." (".$gen2->convert_date($userjournals_timestamp, "short").")";
+         $que = parsesearch($userjournals_username, $query)." (".e107::getDate()->convert_date($userjournals_timestamp, "short").")";
          $ans = parsesearch($userjournals_entry, $query);
          $text .= $linkprefix."blogger.$userjournals_userid.$userjournals_username\">$que</a></b><br /><span class=\"smalltext\">".UJ59."</span><br />$ans<br /><br />";
       }

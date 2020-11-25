@@ -41,7 +41,7 @@ if(!class_exists("userjournals_menu_setup"))
 
 		function uninstall_post($var)
 		{
-			// print_a($var);
+ 
 		}
 
 
