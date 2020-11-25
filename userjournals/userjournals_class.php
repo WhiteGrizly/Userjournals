@@ -195,15 +195,18 @@ if (!class_exists("UserJournals")) {
          if ($this->plugPrefs["userjournals_bloggers_per_page"]) {
 			$start = $start *  $this->plugPrefs["userjournals_bloggers_per_page"];
             $limit = " limit $start ,".$this->plugPrefs["userjournals_bloggers_per_page"];
-         }
-         $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
-              
-         if ($count = e107::getDb()->gen("SELECT distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true )) {
-             
-            while($uj_blog = e107::getDb()->fetch()) {
-               $text .= e107::getParser()->parseTemplate($UJ_BLOGGERS_LIST, FALSE, $userjournals_shortcodes);
-            }
-         } else {
+		 }
+		 
+		 $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
+
+		 $results = e107::getDb()->retrieve("SELECT distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true);
+
+		 if($results) {
+			foreach($results AS $uj_blog) {
+				$text .= e107::getParser()->parseTemplate($UJ_BLOGGERS_LIST, FALSE, $userjournals_shortcodes);
+			}
+		 }
+		 else {
             $text = UJ44;
 		 }
 		 
@@ -243,9 +246,11 @@ if (!class_exists("UserJournals")) {
 			$start = $start * $this->plugPrefs["userjournals_blogs_per_page"];
             $limit = " limit $start,".$this->plugPrefs["userjournals_blogs_per_page"];
          }  
-         $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 AND userjournals_userid=$bloggerid order by userjournals_timestamp DESC";
-         if (e107::getDb()->select("userjournals", "*", $qry.$limit)){
-            while ($row = e107::getDb()->fetch()){
+		 $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 AND userjournals_userid=$bloggerid order by userjournals_timestamp DESC";
+
+		 $results = e107::getDb()->retrieve("userjournals", "*", $qry.$limit, true);
+		 if($results) { 
+		 foreach($results AS $row) {
                $text .= $this->GetBlog($row, $this->plugPrefs["userjournals_len_preview"]);
             }
          } else {
@@ -330,19 +335,20 @@ if (!class_exists("UserJournals")) {
       }
 
       function GetBlog($blog, $limit=false) {
-         global $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
+		 //global $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
+		 global $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
  
          $uj_blog = $blog;  
 		 $uj_categories = $this->cats;   
          
          if ($limit) {         
-            /* temp fix */
-            $short_text = e107::getParser()->toHTML($uj_blog["userjournals_entry"], TRUE, 'DESCRIPTION');  
+			/* temp fix */
+			 
+            $short_text = e107::getParser()->toHTML($blog["userjournals_entry"], TRUE, 'DESCRIPTION');  
             $short_text = e107::getParser()->html_truncate($short_text, $limit , "...");
-            $var['UJ_BLOG_ENTRY_SHORT'] = $short_text;   
-            $UJ_BLOG_SHORT = e107::getParser()->simpleParse($UJ_BLOG_SHORT, $var, false);
-
-            $text = e107::getParser()->parseTemplate($UJ_BLOG_SHORT, FALSE, $userjournals_shortcodes);
+			$vars['UJ_BLOG_ENTRY_SHORT'] = $short_text;   			 
+            $UJ_BLOG_SHORT2 = e107::getParser()->simpleParse($UJ_BLOG_SHORT, $vars, false);			 
+			$text = e107::getParser()->parseTemplate($UJ_BLOG_SHORT2, FALSE, $userjournals_shortcodes);	 
          } else {
             $text = e107::getParser()->parseTemplate($UJ_BLOG, FALSE, $userjournals_shortcodes);
          }
