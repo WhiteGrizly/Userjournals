@@ -4,9 +4,7 @@
 if (!class_exists("UserJournals")) {
    e107::plugLan("userjournals_menu" , "admin/".e_LANGUAGE, false);
    e107::plugLan("userjournals_menu" , e_LANGUAGE, false);
-
-   
-    
+ 
    global $pref;
  
    class UserJournals {
@@ -19,9 +17,7 @@ if (!class_exists("UserJournals")) {
 	  var $pluginName;		
 
       function __construct($mainpage=false) {
-
-		 global $sql, $ns;
-
+ 
 		 $this->pluginName = 'userjournals_menu';
 
 		 $this->editor =  "bbcode";
@@ -190,10 +186,8 @@ if (!class_exists("UserJournals")) {
       }
 
       function DefaultPage($start=1) {
-         global $sql,  $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
+         global  $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
  
-		 $sql = new db();
-
 		 $text = "";
 		 
 		 $start = $start ? $start - 1 : 0;
@@ -204,9 +198,9 @@ if (!class_exists("UserJournals")) {
          }
          $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
               
-         if ($count = $sql->gen("SELECT distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true )) {
+         if ($count = e107::getDb()->gen("SELECT distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true )) {
              
-            while($uj_blog = $sql->fetch()) {
+            while($uj_blog = e107::getDb()->fetch()) {
                $text .= e107::getParser()->parseTemplate($UJ_BLOGGERS_LIST, FALSE, $userjournals_shortcodes);
             }
          } else {
@@ -215,7 +209,7 @@ if (!class_exists("UserJournals")) {
 		 
 		   
          if ($this->plugPrefs["userjournals_bloggers_per_page"]) {
-			$count = $sql->select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", $qry );
+			$count = e107::getDb()->select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", $qry );
 			 
             include_once(e_PLUGIN.$this->pluginName."/handlers/np_class.php");
             $np = new nextprev();
@@ -228,7 +222,7 @@ if (!class_exists("UserJournals")) {
       }
 
       function BloggerPage($bloggerid, $bloggername, $start=1, $msg=false) {
-         global $sql, $uj_message, $uj_synopsis, $userjournals_shortcodes, $UJ_MESSAGE, $UJ_BLOGGER_SYNOPSIS;
+         global  $uj_message, $uj_synopsis, $userjournals_shortcodes, $UJ_MESSAGE, $UJ_BLOGGER_SYNOPSIS;
  
 		 $_msg = $_SESSION['userjournals']['_msg'];
 		 unset($_SESSION['userjournals']['_msg']);
@@ -236,8 +230,8 @@ if (!class_exists("UserJournals")) {
  
          $caption = $this->plugPrefs["userjournals_page_title"].UJ25.$bloggername;
          $text = "";
-         if ($sql->select("userjournals", "userjournals_userid, userjournals_entry", "userjournals_is_blog_desc=1 AND userjournals_userid=".$bloggerid)) {
-            if ($uj_synopsis = $sql->fetch()) {
+         if (e107::getDb()->select("userjournals", "userjournals_userid, userjournals_entry", "userjournals_is_blog_desc=1 AND userjournals_userid=".$bloggerid)) {
+            if ($uj_synopsis = e107::getDb()->fetch()) {
                //$user = getx_user_data($bloggerid);
                $user = e107::user($bloggerid);
                $text .= e107::getParser()->parseTemplate($UJ_BLOGGER_SYNOPSIS, TRUE, $userjournals_shortcodes);
@@ -250,8 +244,8 @@ if (!class_exists("UserJournals")) {
             $limit = " limit $start,".$this->plugPrefs["userjournals_blogs_per_page"];
          }  
          $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 AND userjournals_userid=$bloggerid order by userjournals_timestamp DESC";
-         if ($sql->select("userjournals", "*", $qry.$limit)){
-            while ($row = $sql->fetch()){
+         if (e107::getDb()->select("userjournals", "*", $qry.$limit)){
+            while ($row = e107::getDb()->fetch()){
                $text .= $this->GetBlog($row, $this->plugPrefs["userjournals_len_preview"]);
             }
          } else {
@@ -266,7 +260,7 @@ if (!class_exists("UserJournals")) {
          }
 
          if ($this->plugPrefs["userjournals_blogs_per_page"]) {
-            $count = $sql->select("userjournals", "*", $qry);
+            $count = e107::getDb()->select("userjournals", "*", $qry);
             include_once(e_PLUGIN.$this->pluginName."/handlers/np_class.php");
                        
             $np = new nextprev();
@@ -276,16 +270,15 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogPage($blogid) {
-		 global $sql;
 		 
          $this->plugPrefs = e107::getPlugPref($this->pluginName);                    
  
 		 $_msg = $_SESSION['userjournals']['_msg'];
 		 unset($_SESSION['userjournals']['_msg']);
 
-		 if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
+		 if (e107::getDb()->select("userjournals", "*", "userjournals_id=$blogid")){
             $text = "";
-            if ($row = $sql->fetch()){
+            if ($row = e107::getDb()->fetch()){
                $text .= $this->GetBlog($row);
             } else {
                $text = $this->Message("232".UJ28);
@@ -305,8 +298,7 @@ if (!class_exists("UserJournals")) {
       }
 
       function AllBlogsPage($start = 1 ) {
-		 global $sql;
-		 
+ 
 		 $this->plugPrefs = e107::getPlugPref($this->pluginName);
 
          $caption = $this->plugPrefs["userjournals_page_title"];
@@ -318,7 +310,7 @@ if (!class_exists("UserJournals")) {
          
 		 $qry = "  userjournals_is_blog_desc=0 AND userjournals_is_published=0 ORDER BY userjournals_timestamp DESC";
 		  
-         if ($rows = $sql->retrieve("userjournals", "*", $qry.$limit, true  )) {
+         if ($rows = e107::getDb()->retrieve("userjournals", "*", $qry.$limit, true  )) {
 			$text = "";
 			foreach($rows AS $row) {
                $text .= $this->GetBlog($row, $this->plugPrefs["userjournals_len_preview"])."<br/>"; 
@@ -328,7 +320,7 @@ if (!class_exists("UserJournals")) {
          }
 
          if ($this->plugPrefs["userjournals_blogs_per_page"]) {
-            $count = $sql->select("userjournals", "*", $qry );
+            $count = e107::getDb()->select("userjournals", "*", $qry );
             include_once(e_PLUGIN.$this->pluginName."/handlers/np_class.php");
             $np = new nextprev();
             $text .= $np->nextprev(e_SELF, $start, $this->plugPrefs["userjournals_blogs_per_page"], $count, "", "allblogs", true);
@@ -352,16 +344,14 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogAddEdit($blogid=false) {
-		 global   $sql ;
 
 		 $frm = e107::getForm();
- 
                   
          if (check_class($this->plugPrefs["userjournals_writers"])) {            
             $text = "<form action='".e_SELF."?save' method='post'>";
             if ($blogid) {
-               if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
-                  if ($result = $sql->fetch()){
+               if (e107::getDb()->select("userjournals", "*", "userjournals_id=$blogid")){
+                  if ($result = e107::getDb()->fetch()){
                      extract($result);
                      $text = "<form action='".e_SELF."?update.$blogid' method='post'>";
                   }
@@ -455,7 +445,10 @@ if (!class_exists("UserJournals")) {
                $journal_entry       = e107::getParser()->toDB($_POST['journal_entry']);
                $journal_cats        = e107::getParser()->toDB($_POST["journal_cat"]);
                $journal_cats        = implode(",", $journal_cats);
-               $journal_cats        = varset($journal_cats, '');
+			   $journal_cats        = varset($journal_cats, '');
+			   
+			   //fix integrity constraint violation: 1048 Column 'userjournals_mood' cannot be null
+			   $journal_mood = varset($journal_mood, '');
                
                $thetime = time();
                $thedate = e107::getDate()->convert_date($thetime, "forum");
@@ -494,13 +487,11 @@ if (!class_exists("UserJournals")) {
 
       function BlogUpdate($blogid) {
  
-		$sql = e107::getDb();
-
          // Only allow blog writers to update entries
          if (check_class($this->plugPrefs["userjournals_writers"])) {
             // Make sure user is only updating their own entries
-            if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
-               if ($result = $sql->fetch()){
+            if (e107::getDb()->select("userjournals", "*", "userjournals_id=$blogid")){
+               if ($result = e107::getDb()->fetch()){
                   extract($result);
                   if ($userjournals_userid != USERID) {
                      return $this->BloggerPage(USERID, USERNAME, 0, $this->Message(UJ17));
@@ -513,7 +504,7 @@ if (!class_exists("UserJournals")) {
                $journal_title    = e107::getParser()->toDB($_POST['journal_title']);
                $journal_published = isset($_POST['journal_published']) ? 0 : 1;
                $journal_playing  = e107::getParser()->toDB($_POST['journal_playing']);
-               $journal_mood     = e107::getParser()>toDB($_POST['journal_mood']);
+               $journal_mood     = e107::getParser()->toDB($_POST['journal_mood']);
                $journal_entry    = e107::getParser()->toDB($_POST['journal_entry']);
                $journal_cats     = $_POST["journal_cat"];
                $journal_cats     = implode(",", $journal_cats);
@@ -525,9 +516,11 @@ if (!class_exists("UserJournals")) {
                } else {
                   $datesql = "";
                }
+			   //fix integrity constraint violation: 1048 Column 'userjournals_mood' cannot be null
+			   $journal_mood = varset($journal_mood, '');
 
                $the_sql = "userjournals_subject='$journal_title', userjournals_categories='$journal_cats', userjournals_playing='$journal_playing', userjournals_mood='$journal_mood', userjournals_entry='$journal_entry', userjournals_is_published='$journal_published' $datesql where userjournals_id=$blogid";
-               if ($sql->db_Update('userjournals', $the_sql)){
+               if (e107::getDb()->update('userjournals', $the_sql)){
 				  $text = $this->Message(UJ13);
 				  $_SESSION['userjournals']['_msg'] = $text;
 				  e107::redirect(e_PLUGIN.$this->pluginName."/userjournals.php?blog.".$blogid);
@@ -546,13 +539,12 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogDelete($blogid) {
-		 global $sql;
  
          // Only allow blog writers to delete entries
          if (check_class($this->plugPrefs["userjournals_writers"]) || ADMIN) {
             // Make sure user is only deleting their own entries
-            if ($sql->select("userjournals", "*", "userjournals_id=$blogid")){
-               if ($result = $sql->fetch()){
+            if (e107::getDb()->select("userjournals", "*", "userjournals_id=$blogid")){
+               if ($result = e107::getDb()->fetch()){
                   extract($result);
                   if ($userjournals_userid != USERID && !ADMIN) {
                      return $this->BloggerPage(USERID, USERNAME, 0, $this->Message(UJ17));
@@ -561,11 +553,16 @@ if (!class_exists("UserJournals")) {
             }
 
             // Do the delete
-            if (!$sql->db_Delete("userjournals", "userjournals_id='$blogid' OR userjournals_comment_parent='$blogid'")){
+            if (!e107::getDb()->delete("userjournals", "userjournals_id='$blogid' OR userjournals_comment_parent='$blogid'")){
                $text = $this->Message("SQL ".UJ23 );
             }
             // Delete any comments for this entry
-            $sql->db_Delete("comments", "comment_item_id='$blogid' and comment_type='userjourna'");
+			e107::getDb()->delete("comments", "comment_item_id='$blogid' and comment_type='userjourna'");
+			
+			// Delete any ratinsg for this entry
+			e107::getRate()->delete_ratings('userjourna', $blogid);
+			
+
          } else {
             $text = $this->Message(UJ17);
          }
@@ -574,13 +571,12 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsis() {
-         global $sql;
- 
+  
          if (check_class($this->plugPrefs["userjournals_writers"])) {
             $text = "<form action='".e_SELF."?synopsissave' method='post'>";
 
-            if ($sql->select("userjournals", "*", "userjournals_userid=".USERID." and userjournals_is_blog_desc='1'")){
-               if ($row = $sql->fetch()){
+            if (e107::getDb()->select("userjournals", "*", "userjournals_userid=".USERID." and userjournals_is_blog_desc='1'")){
+               if ($row = e107::getDb()->fetch()){
                   extract($row);
                   $text = "<form action='".e_SELF."?synopsisupdate.".USERID."' method='post'>";
                }
@@ -611,7 +607,6 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsisSave() {
-         global $sql;
  
          // Only allow blog writers to save a synopsis
          if (check_class($this->plugPrefs["userjournals_writers"])) {
@@ -638,7 +633,7 @@ if (!class_exists("UserJournals")) {
                     'userjournals_is_published'      => 0,                                     
         		);
           
-               if ($sql->insert('userjournals', $the_sql)){
+               if (e107::getDb()->insert('userjournals', $the_sql)){
 				  $text = $this->Message(UJ54);
 				  $_SESSION['userjournals']['_msg'] = $text;
 				  e107::redirect(e_PLUGIN.$this->pluginName."/userjournals.php?blogger.".USERID); 
@@ -657,7 +652,6 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsisUpdate() {
-         global $sql;
  
          // Only allow blog writers to update a synopsis
          if (check_class($this->plugPrefs["userjournals_writers"])) {
@@ -670,7 +664,7 @@ if (!class_exists("UserJournals")) {
                $thedate = e107::getDate()->convert_date($thetime, "forum");
 
                $the_sql = "userjournals_entry='$journal_synopsis', userjournals_date='$thedate', userjournals_timestamp='$thetime' where userjournals_userid=".USERID." and userjournals_is_blog_desc=1";
-               if ($sql->db_Update('userjournals', $the_sql)){
+               if (e107::getDb()->update('userjournals', $the_sql)){
 				  $text = $this->Message(UJ54); 
 				  $_SESSION['userjournals']['_msg'] = $text;
 				  e107::redirect(e_PLUGIN.$this->pluginName."/userjournals.php?blogger.".USERID);  
@@ -689,13 +683,12 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogSynopsisDelete() {
-         global $sql;
  
          // Only allow blog writers to delete entries
          if (check_class($this->plugPrefs["userjournals_writers"])) {
 
             // Do the delete
-            if ($sql->db_Delete("userjournals", "userjournals_userid='".USERID."' and userjournals_is_blog_desc='1'")){
+            if (e107::getDb()->delete("userjournals", "userjournals_userid='".USERID."' and userjournals_is_blog_desc='1'")){
                $text = $this->Message(UJ89);
             } else {
                $text = $this->Message("SQL ".UJ23 );
@@ -708,10 +701,7 @@ if (!class_exists("UserJournals")) {
       }
 
       function ReportPage($blogid, $msg=false) {
-		 global $sql;
-		 
-		 $this->plugPrefs = e107::getPlugPref($this->pluginName);
-
+ 
          if (USERID && $this->plugPrefs['userjournals_report_blog']) {
             $text = "<form action='".e_SELF."?reportit.$blogid' method='post'>";
             $text .= "<table class='forumheader' border='0' style='width:100%;'>";
@@ -739,7 +729,6 @@ if (!class_exists("UserJournals")) {
       }
 
       function ReportItPage($blogid) {
-		 global $sql ;
  
          if (USERID && $this->plugPrefs['userjournals_report_blog']) {
 	         if (isset($_POST['journal_report']) && strlen($_POST['journal_report']) > 0) {
@@ -775,7 +764,7 @@ if (!class_exists("UserJournals")) {
       }
 
       function GetReaderMenu() {
-		 global $sql, $userjournals_shortcodes, $UJ_MENU_READER, $UJ_RSS;
+		 global $userjournals_shortcodes, $UJ_MENU_READER, $UJ_RSS;
 		 
 		 	$ns = e107::getRender();
 
@@ -795,14 +784,12 @@ if (!class_exists("UserJournals")) {
        * @param  class an instance of the e107table class
        */
       function GetWriterMenu() {
-		 global  $sql,  $userjournals_shortcodes, $UJ_MENU_WRITER;
-		 
-		 $ns = e107::getRender();
-
+		 global   $userjournals_shortcodes, $UJ_MENU_WRITER;
+ 
 		 // Check if user is a UJ writer
          if (check_class( e107::pref($this->pluginName, 'userjournals_writers'))) {
             $text = e107::getParser()->parseTemplate($UJ_MENU_WRITER, FALSE, $userjournals_shortcodes);
-            $ns->tablerender(UJ39.$this->plugPrefs["userjournals_menu_title"], $text);
+            e107::getRender()->tablerender(UJ39.$this->plugPrefs["userjournals_menu_title"], $text);
          }
       }
 
@@ -833,14 +820,13 @@ if (!class_exists("UserJournals")) {
       }
 
       function CategoryPage($catid, $msg=false) {
-         global $sql;
-
+ 
          $caption = $this->plugPrefs["userjournals_page_title"].UJ95.$this->cats[$catid]["userjournals_cat_name"];
          $cats_sql = "AND userjournals_categories='$catid' or userjournals_categories regexp '^$catid,' or userjournals_categories regexp ',$catid,' or userjournals_categories regexp ',$catid'";
 
-         if ($sql->select("userjournals", "*", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 $cats_sql ORDER BY userjournals_timestamp DESC")){
+         if (e107::getDb()->select("userjournals", "*", "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 $cats_sql ORDER BY userjournals_timestamp DESC")){
             $text = "";
-            while ($row = $sql->fetch()){
+            while ($row = e107::getDb()->fetch()){
                $text .= $this->GetBlog($row, $this->plugPrefs["userjournals_len_preview"])."<br/>";
             }
          } else {
@@ -856,7 +842,7 @@ if (!class_exists("UserJournals")) {
       }
 
       function AllCategoriesPage() {
-		 global $sql,  $uj_categories, $uj_category, $userjournals_shortcodes, $UJ_CATEGORY, $UJ_CATEGORY_LIST;
+		 global  $uj_categories, $uj_category, $userjournals_shortcodes, $UJ_CATEGORY, $UJ_CATEGORY_LIST;
 
          $caption = $this->plugPrefs["userjournals_page_title"]." : ".UJ91;
          $keys = array_keys($this->cats);
