@@ -62,12 +62,12 @@ if (!class_exists("UserJournals")) {
 		 $template_file =  e107::getParser()->replaceConstants($this->plugPrefs["userjournals_template"]);
  
 		 if (file_exists($template_file)) {   
-			require_once($template_file);
+			require($template_file);
 		 } else {
-			require_once(e_PLUGIN.$this->pluginName."/templates/default.php");
+			require(e_PLUGIN.$this->pluginName."/templates/default.php");
 		 }
 
-		 require_once(e_PLUGIN.$this->pluginName."/userjournals_shortcodes.php");
+		 require(e_PLUGIN.$this->pluginName."/userjournals_shortcodes.php");
 	}
 
 	function init($mode = true) {
