@@ -95,7 +95,7 @@ SC_BEGIN UJ_BLOG_DATE
    if (array_key_exists("label", $parms)) {
       $text .= UJ46;
    }  
-   $text .=  e107::getDate()->convert_date($uj_blog["userjournals_timestamp"], "short")  
+   $text .=  e107::getDate()->convert_date($uj_blog["userjournals_timestamp"], "short");  
    return $text;
 SC_END
 
