@@ -1,5 +1,5 @@
 <?php
-	if (!$sql->db_Select("plugin", "*", "plugin_path='userjournals' AND plugin_installflag='1'")) {
+	if (!e107::getDb()->select("plugin", "*", "plugin_path='userjournals' AND plugin_installflag='1'")) {
 	   // Plugin not installed
 		return;
 	}
@@ -24,11 +24,13 @@
 
     e107::plugLan("userjournals" , "admin/".e_LANGUAGE, false);
     e107::plugLan("userjournals" , e_LANGUAGE, false);
+    
+    $results = e107::getDb()->retrieve($qry, true);
 
-	if (!$sql->db_Select_gen($qry)) {
+	if (!$results) {
 		$LIST_DATA = UJ44;
 	} else {
-		while ($row = $sql->db_Fetch()) {
+		foreach($results AS $row) {
 			$rowheading	         = $this->parse_heading($row['userjournals_subject'], $mode);
 			$ICON		            = $bullet;
 			$HEADING	            = "<a href='".e_PLUGIN_ABS."userjournals/userjournals.php?blog.".$row['userjournals_id']."' title='".$row['userjournals_subject']."'>".$rowheading."</a>";
