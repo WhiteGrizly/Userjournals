@@ -42,6 +42,8 @@ define("UJ40", "Posted on ");
 define("UJ41", "Now Playing: ");
 define("UJ42", "Mood: ");
 define("UJ43", "Bloggers");
+
+
 define("UJ44", "There are no blogs");
 define("UJ45", "");
 define("UJ46", "Written on ");
@@ -116,3 +118,25 @@ define("UJ110", "Return to blog");
 define("UJE01", "Error saving synopsis");
 define("UJE02", "Error saving blog");
  
+define("_20AUTHORS","Last 20 Active Authors");
+
+define("_CLICKTOVIEW","(click to view)");
+define("_CREATEACCOUNT","Create an Account");
+define("_JOURNALDIR","Journal Directory");
+
+
+define("_LISTALLJOURNALS","List All Journals");
+
+define("_MEMBER","Member");
+define("_MEMBERPROFILE","Member's Profile");
+define("_MEMBERSCAN","Site member's automatically have the option to create their own journals and post comments.");
+ 
+
+
+define("_USERSJOURNAL","Users Journal");
+define("_VIEW","View");
+define("_VIEWJOURNAL","View Journal");
+
+define("_YOURJOURNAL","Your Journal");
+
+define("UJ43b", "The last [x] journals entries");

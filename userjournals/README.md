@@ -3,7 +3,7 @@
 Originally developed under name userjournals_menu by Burgrain and others. See README.txt for more information.
 
 
-## Version 2.0.0 :
+## Version 2.1.0 :
 - updated for php 7.2 except addons support
 
 ==============================================================================================
@@ -20,7 +20,42 @@ THIS PLUGIN IS ONLY KNOWN TO WORK WITH e_107 VERSION 2.3.0!
 
 ##### Version History:
 
+## Version 2.1.0 :
 
+- updated shortcodes for new standards
+- added Nuke look template
+- added list of latest journals
+- added option label to mood
+- added option to display mods with icons in editing
+- separated default (plugin frontpage) and allblogs page
+
+
+Before:
+Journal Directory = List all bloggers, 
+List All Journals = allblogs, template $UJ_BLOG_SHORT 
+List all categories = allcats, template UJ_CATEGORY_LIST
+List all bloggers = bloggers, template UJ_BLOGGERS_LIST
+
+Now: 
+
+Journal Directory = plugin frontpage 
+  $USERJOURNALS_TEMPLATE['journals_list'] + start,items, end
+
+List All Journals = allblogs, template $UJ_BLOG_SHORT 
+
+List all categories = allcats, template UJ_CATEGORY_LIST
+
+List all bloggers = bloggers, template UJ_BLOGGERS_LIST
+
+$USERJOURNALS_TEMPLATE['bloggers_list'] + start,items, end
+
+
+## Version 2.0.1 :
+- not released
+- fixed: user avatar 
+
+## Version 2.0.0 :
+- updated for php 7.2 except addons support
 
 ==============================================================================================
 

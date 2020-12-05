@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<e107Plugin name="UserJournals" lan="LAN_JOURNAL_A0" version="2.0.0" date="2020-11-22" compatibility="2.0" installRequired="true" >
+<e107Plugin name="UserJournals" lan="LAN_JOURNAL_A0" version="2.1.0" date="2020-11-22" compatibility="2.0" installRequired="true" >
 	<author name="Jimako" url="https://www.e107sk.com/" />
 	<summary lan="LAN_JOURNAL_A0_SUM">UserJournals plugin for e107 website system by burgrain </summary>
 	<description lan="LAN_JOURNAL_A0_DESC">UserJournals plugin for e107 website system by burgrain</description>
@@ -40,6 +40,7 @@
 		<pref name='userjournals_show_rss'>0</pref>
 		<pref name='userjournals_writers'>0</pref>
 		<pref name='userjournals_template'></pref>	
+		<pref name='userjournals_show_mood_dropdown'></pref>
 	</pluginPrefs>
 </e107Plugin>
   

@@ -156,4 +156,7 @@ $UJ_RSS = "{UJ_RSS}";
 
 $UJ_MESSAGE = "{UJ_MESSAGE}";
 $UJ_MESSAGE_EXTRA = "{UJ_MESSAGE_EXTRA}";
-?>
+
+$USERJOURNALS_TEMPLATE['bloggers_list']['start']  = $sc_style['UJ_BLOGGERS_LIST']['pre'];
+$USERJOURNALS_TEMPLATE['bloggers_list']['item'] =  $UJ_BLOGGERS_LIST;
+$USERJOURNALS_TEMPLATE['bloggers_list']['end']  =  $sc_style['UJ_BLOGGERS_LIST']['post'];

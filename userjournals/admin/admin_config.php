@@ -41,16 +41,18 @@ class userjournals_ui extends e_admin_ui
 
 			'userjournals_userid'     => array (  'title' => LAN_AUTHOR,  'type' => 'user',  'data' => 'int',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
-			'userjournals_subject'    => array (  'title' => UJ6,  'type' => 'text',  'data' => 'int',  'width' => 'auto',  'inline' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',),
+			'userjournals_subject'    => array (  'title' => UJ6,  'type' => 'text',  'data' => 'str',  'width' => 'auto',  'inline' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',),
 
 			'userjournals_is_published'=> array (  'title' => UJ62,  'type' => 'boolean',  'data' => 'int',  'width' => 'auto',  'batch' => true,  'help' => UJ63,  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
-			'userjournals_categories' => array (  'title' => 'Categories',  'type' => 'dropdown',  'data' => 'int',  'width' => 'auto',  'batch' => true,  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
-			'userjournals_playing'    => array (  'title' => UJ41,  'type' => 'text',  'data' => 'int',  'width' => 'auto',  'help' => UJ64,  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',),
+			'userjournals_categories' => array (  'title' => 'Categories',  'type' => 'checkboxes',  'data' => 'str',  'width' => 'auto',  'batch' => true,  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
-			'userjournals_mood'       => array (  'title' => UJ42,  'type' => 'dropdown',  'data' => 'int',  'width' => 'auto',  'batch' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => false,),
+			'userjournals_playing'    => array (  'title' => UJ41,  'type' => 'text',  'data' => 'str',  'width' => 'auto',  'help' => UJ64,  'readParms' =>  array (),  'writeParms' =>  array ('size'=>'block-level'),  'class' => 'left',  'thclass' => 'left',),
+
+			'userjournals_mood'       => array (  'title' => UJ42,  'type' => 'dropdown',  'data' => 'str',  'width' => 'auto',  'batch' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',  'filter' => false,),
+
 			
-			'userjournals_entry'      => array (  'title' => UJ7,  'type' => 'bbarea',  'data' => 'str',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
+			'userjournals_entry'      => array (  'title' => UJ7,  'type' => 'textarea',  'data' => 'str',  'width' => 'auto',  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
 			'userjournals_date'       => array (  'title' => UJ96,  'type' => false,    'data' => 'str',  'width' => 'auto',  'filter' => true,  'help' => '',  'readParms' =>  array (),  'writeParms' =>  array (),  'class' => 'left',  'thclass' => 'left',),
 
@@ -71,7 +73,7 @@ class userjournals_ui extends e_admin_ui
 		protected $fieldpref = array('userjournals_id', 'userjournals_userid', 'userjournals_subject', 'userjournals_mood', 'userjournals_date');
 		
 
-	//	protected $preftabs        = array('General', 'Other' );
+	 	protected $preftabs        = array('General', JOURNAL_A24_S );
 		protected $prefs = array(
 			'userjournals_active'		=> array('title'=> JOURNAL_A3, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A3_P, 'writeParms' => array()),
 			
@@ -89,7 +91,6 @@ class userjournals_ui extends e_admin_ui
 	 
 			'userjournals_allowratings'		=> array('title'=> JOURNAL_A15, 'tab'=>0, 'type'=>'userclass', 'data' => 'str', 'help'=>JOURNAL_A15_P, 'writeParms' => array()),
 
-			'userjournals_len_subject'		=> array('title'=> JOURNAL_A19, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A19_P, 'writeParms' => array()),
 
 			'userjournals_len_preview'		=> array('title'=> JOURNAL_A20, 'tab'=>0, 'type'=>'number', 'data' => 'str', 'help'=>JOURNAL_A20_P, 'writeParms' => array()),
 
@@ -111,7 +112,9 @@ class userjournals_ui extends e_admin_ui
 
 			'userjournals_template'		=> array('title'=> JOURNAL_A30, 'tab'=>0, 'type'=>'dropdown', 'data' => 'str', 'help'=>JOURNAL_A30_P, 'writeParms' => array()),
 
-			'userjournals_show_mood'		=> array('title'=> JOURNAL_A24, 'tab'=>0, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A24_P, 'writeParms' => array()),	
+			'userjournals_show_mood'		=> array('title'=> JOURNAL_A24, 'tab'=>1, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A24_P, 'writeParms' => array()),	
+
+			'userjournals_show_mood_dropdown'	 => array('title'=> JOURNAL_A24_2, 'tab'=>1, 'type'=>'boolean', 'data' => 'str', 'help'=>JOURNAL_A24_2P, 'writeParms' => array()),	
 
 			'userjournals_report_blog'		=> array('title'=> JOURNAL_A34, 'tab'=>0, 'type'=>'dropdown', 'data' => 'str', 'help'=>JOURNAL_A34_P, 'writeParms' => array()),
 
@@ -176,6 +179,8 @@ class userjournals_ui extends e_admin_ui
 			}	
  
 			$this->fields['userjournals_categories']['writeParms']['optArray'] = $cats;
+			$this->fields['userjournals_categories']['writeParms']['multiple'] = 1;
+			$this->fields['userjournals_categories']['writeParms']['inline'] = 1;
 		}
 
 		

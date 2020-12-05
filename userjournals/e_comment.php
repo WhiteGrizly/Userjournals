@@ -13,7 +13,7 @@ e107::plugLan("userjournals" , e_LANGUAGE, false);
 // $plugin_name      = A name for your plugin. It will be used in links to comments, in list_new/new.php.
 
 $e_plug_table     = "userjourna";
-$reply_location   = e_PLUGIN."userjournals/userjournals.php?blog.{NID}";
+$reply_location   = e_PLUGIN_ABS."userjournals/userjournals.php?blog.{NID}";
 $db_table         = "userjournals";
 $link_name        = "userjournals_subject";
 $db_id            = "userjournals_id";

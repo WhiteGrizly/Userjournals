@@ -71,13 +71,8 @@ define("JOURNAL_A22",   "Show RSS feeds");
 define("JOURNAL_A22_P", "Tick to show links to the blog RSS feeds on the blog menu");
 define("JOURNAL_A23",   "Show Now Playing");
 define("JOURNAL_A23_P", "Tick to show Now Playing field when writing blogs");
-
-define("JOURNAL_A24_S", "Mood Settings");
 define("JOURNAL_A24",   "Show Mood");
 define("JOURNAL_A24_P", "Tick to show the Mood field when writing blogs");
-define("JOURNAL_A24_2", "Show Mood as list");
-define("JOURNAL_A24_2P", "On - Mood is displayed as dropdwon, Off - mood is displayed with smileys");
-
 define("JOURNAL_A25",   "Show Categories");
 define("JOURNAL_A25_P", "Tick to show the Categories field when writing blogs");
 define("JOURNAL_A25_0", "No categories");
@@ -111,5 +106,4 @@ define("JOURNAL_MENU_01",  "Categories");
 define("JOURNAL_MENU_01_ADD",  "Add New Category");
 define("JOURNAL_MENU_98",  "Convert comments");
 define("JOURNAL_MENU_99",  "Read Me");
- 
-
+?>

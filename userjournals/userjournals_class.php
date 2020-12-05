@@ -1,9 +1,9 @@
 <?php
 
- 
+e107::plugLan("userjournals" , "admin/".e_LANGUAGE, false);
+e107::plugLan("userjournals" , e_LANGUAGE, false);
+
 if (!class_exists("UserJournals")) {
-   e107::plugLan("userjournals" , "admin/".e_LANGUAGE, false);
-   e107::plugLan("userjournals" , e_LANGUAGE, false);
  
    global $pref;
  
@@ -14,7 +14,9 @@ if (!class_exists("UserJournals")) {
 	  var $user;
 	  var $editor;
 	  var $plugPrefs;
-	  var $pluginName;		
+	  var $pluginName;	
+	  var $plugTemplates;	
+	  var $sc;	
 
       function __construct($mainpage=false) {
  
@@ -54,23 +56,34 @@ if (!class_exists("UserJournals")) {
 
          // Get all categories - we need these all ove rthe place
 		 $result = e107::getDb()->retrieve("userjournals_categories", "*", "ORDER BY userjournals_cat_name ASC", true);
- 
          foreach($result AS $row) {
             $this->cats[$row["userjournals_cat_id"]] = $row;
 		 }
 		 
-		 $template_file =  e107::getParser()->replaceConstants($this->plugPrefs["userjournals_template"]);
- 
-		 if (file_exists($template_file)) {   
+		 $template_file =  
+		 e107::getParser()->replaceConstants($this->plugPrefs["userjournals_template"], 'abs');
+  
+		 if (file_exists($template_file)) {    
 			require($template_file);
 		 } else {
-			require(e_PLUGIN.$this->pluginName."/templates/default.php");
+			require(e_PLUGIN.$this->pluginName."/templates/unnuke.php");
 		 }
+ 
+		 
+		 $this->plugTemplates['startjournal'] = $USERJOURNALS_TEMPLATE['startjournal'];
+		 $this->plugTemplates['journals_list'] = $USERJOURNALS_TEMPLATE['journals_list'];
+		 $this->plugTemplates['bloggers_list'] = $USERJOURNALS_TEMPLATE['bloggers_list'];
 
-		 require(e_PLUGIN.$this->pluginName."/userjournals_shortcodes.php");
+ 
+		 $this->plugTemplates['UJ_BLOGGER_SYNOPSIS'] = $UJ_BLOGGER_SYNOPSIS;
+ 
+		 $this->sc  =  e107::getScParser()->getScObject('userjournals_shortcodes', true); 
+ 
 	}
 
 	function init($mode = true) {
+
+		
 		$this->setMode($mode);
 
 	}
@@ -107,7 +120,9 @@ if (!class_exists("UserJournals")) {
             $ujop = varset($qs[0], "bloggers");
             $ujp1 = varset(intval($qs[1]), 0);
             $ujp2 = varset(intval($qs[2]), 0);
-                        
+			 
+			$start = $this->startjournal(); //unnuke way
+
             switch ($ujop) {
                case "blogger" : {
                   //$user = getx_user_data($ujp1);
@@ -174,83 +189,122 @@ if (!class_exists("UserJournals")) {
                case "bloggers" : {
                   $page = $this->DefaultPage($ujp1);
                   break;
-               }
+			   }
+ 		   
                default : {
-                  $page = $this->DefaultPage(1);
-                  break;
+				 $page = $this->MainPage(1);
                }
             }
-              
+			 
+			if($start) {
+				 $ns->tablerender('', $start, 'nocaption'); 
+			}  		  
             $ns->tablerender($page[0], $page[1]);
          }
       }
 
-      function DefaultPage($start=1) {
-         global  $uj_blog, $userjournals_shortcodes, $UJ_BLOGGERS_LIST;
+      function MainPage($start=1) {
  
-		 $text = "";
-		 
-		 $start = $start ? $start - 1 : 0;
+		$text = "";
+		
+		$start = $start ? $start - 1 : 0;
 
-         if ($this->plugPrefs["userjournals_bloggers_per_page"]) {
-			$start = $start *  $this->plugPrefs["userjournals_bloggers_per_page"];
-            $limit = " limit $start ,".$this->plugPrefs["userjournals_bloggers_per_page"];
-		 }
-		 
-		 $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
+		if ($this->plugPrefs["userjournals_bloggers_per_page"]) {
+		   $start = $start *  $this->plugPrefs["userjournals_bloggers_per_page"];
+		   $limit = " limit $start ,".$this->plugPrefs["userjournals_bloggers_per_page"];
+		}
+		
+		$qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 order by userjournals_timestamp desc";
 
-		 $results = e107::getDb()->retrieve("SELECT distinct(userjournals_userid) as userjournals_userid, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true);
+		$results = e107::getDb()->retrieve("SELECT *, u.user_name  FROM #userjournals as j
+		LEFT JOIN #user AS u
+		ON u.user_id =  j.userjournals_userid 
+		WHERE ".$qry.$limit, true);
 
-		 if($results) {
-			foreach($results AS $uj_blog) {
-				$text .= e107::getParser()->parseTemplate($UJ_BLOGGERS_LIST, FALSE, $userjournals_shortcodes);
-			}
-		 }
-		 else {
-            $text = UJ44;
-		 }
+		if($results) {
+		   $text .= $this->plugTemplates['journals_list']['start']; 
+		   foreach($results AS $row) {
+			   $this->sc->setVars($row); 
+			   $text .= e107::getParser()->parseTemplate($this->plugTemplates['journals_list']['item'], FALSE, $this->sc);
+		   }
+		   $text .= $this->plugTemplates['journals_list']['end']; 
+		}
+		else {
+		   $text = UJ44;
+		}
+ 
+		$caption = str_replace('[x]',$this->plugPrefs["userjournals_blogs_per_page"],UJ43b);
 		 
-		   
-         if ($this->plugPrefs["userjournals_bloggers_per_page"]) {
-			$count = e107::getDb()->select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", $qry );
-			 
-            include_once(e_PLUGIN.$this->pluginName."/handlers/np_class.php");
-            $np = new nextprev();
-             
-			$text .= $np->nextprev(e_SELF, $start, $this->plugPrefs["userjournals_bloggers_per_page"], $count, "", "bloggers", true);
-			 
-		 }
+		return array($caption, $text);
+	 }
+
+	 function DefaultPage($start=1) {
+ 
+		$text = "";
+		
+		$start = $start ? $start - 1 : 0;
+
+		if ($this->plugPrefs["userjournals_bloggers_per_page"]) {
+		   $start = $start *  $this->plugPrefs["userjournals_bloggers_per_page"];
+		   $limit = " limit $start ,".$this->plugPrefs["userjournals_bloggers_per_page"];
+		}
+		
+		$qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 group by userjournals_userid order by userjournals_timestamp desc";
+
+		$results = e107::getDb()->retrieve("SELECT distinct(userjournals_userid) as userjournals_userid, userjournals_id, max(userjournals_timestamp) as userjournals_timestamp FROM #userjournals WHERE ".$qry.$limit, true);
+
+		if($results) {
+		   $text .= $this->plugTemplates['bloggers_list']['start'];  
+		   foreach($results AS $row) {
+			   $this->sc->setVars($row);
+			   $text .= e107::getParser()->parseTemplate($this->plugTemplates['bloggers_list']['item'], FALSE, $this->sc);
+		   }
+		   $text .= $this->plugTemplates['bloggers_list']['end']; 
+		}
+		else {
+		   $text = UJ44;
+		}
+		
 		  
-         return array(UJ43, $text);
-      }
-
+		if ($this->plugPrefs["userjournals_bloggers_per_page"]) {
+		   $count = e107::getDb()->select("userjournals", "distinct(userjournals_userid) as id, max(userjournals_timestamp) as ts", $qry );
+			
+		   include_once(e_PLUGIN.$this->pluginName."/handlers/np_class.php");
+		   $np = new nextprev();
+			
+		   $text .= $np->nextprev(e_SELF, $start, $this->plugPrefs["userjournals_bloggers_per_page"], $count, "", "bloggers", true);
+			
+		}
+		 
+		return array(UJ43, $text);
+	 }
+ 
       function BloggerPage($bloggerid, $bloggername, $start=1, $msg=false) {
-         global  $uj_message, $uj_synopsis, $userjournals_shortcodes, $UJ_MESSAGE, $UJ_BLOGGER_SYNOPSIS;
+         global  $uj_message, $uj_synopsis, $UJ_MESSAGE;
  
 		 $_msg = $_SESSION['userjournals']['_msg'];
 		 unset($_SESSION['userjournals']['_msg']);
 
- 
          $caption = $this->plugPrefs["userjournals_page_title"].UJ25.$bloggername;
          $text = "";
-         if (e107::getDb()->select("userjournals", "userjournals_userid, userjournals_entry", "userjournals_is_blog_desc=1 AND userjournals_userid=".$bloggerid)) {
-            if ($uj_synopsis = e107::getDb()->fetch()) {
-               //$user = getx_user_data($bloggerid);
-               $user = e107::user($bloggerid);
-               $text .= e107::getParser()->parseTemplate($UJ_BLOGGER_SYNOPSIS, TRUE, $userjournals_shortcodes);
-            }
+         if ($uj_synopsis = e107::getDb()->retrieve("userjournals", "userjournals_userid, userjournals_entry", "userjournals_is_blog_desc=1 AND userjournals_userid=".$bloggerid)) {
+			   $userdata= e107::user($bloggerid);
+			   $uj_synopsis = array_merge($uj_synopsis, $userdata); 
+			   $this->sc->setVars($uj_synopsis);   
+               $text .= e107::getParser()->parseTemplate($this->plugTemplates['UJ_BLOGGER_SYNOPSIS'], TRUE, $this->sc);
          }
 		 
          $start = $start ? $start - 1 : 0;
          if ($this->plugPrefs["userjournals_blogs_per_page"]) {
 			$start = $start * $this->plugPrefs["userjournals_blogs_per_page"];
             $limit = " limit $start,".$this->plugPrefs["userjournals_blogs_per_page"];
-         }  
+		 }  
+		 
 		 $qry = "userjournals_is_comment=0 AND userjournals_is_blog_desc=0 AND userjournals_is_published=0 AND userjournals_userid=$bloggerid order by userjournals_timestamp DESC";
 
 		 $results = e107::getDb()->retrieve("userjournals", "*", $qry.$limit, true);
 		 if($results) { 
-		 foreach($results AS $row) {
+		 foreach($results AS $row) { 
                $text .= $this->GetBlog($row, $this->plugPrefs["userjournals_len_preview"]);
             }
          } else {
@@ -275,28 +329,24 @@ if (!class_exists("UserJournals")) {
       }
 
       function BlogPage($blogid) {
-		 
-         $this->plugPrefs = e107::getPlugPref($this->pluginName);                    
  
 		 $_msg = $_SESSION['userjournals']['_msg'];
 		 unset($_SESSION['userjournals']['_msg']);
 
-		 if (e107::getDb()->select("userjournals", "*", "userjournals_id=$blogid")){
+		 if (e107::getDb()->select("userjournals", "*", "userjournals_id=$blogid")) {
             $text = "";
             if ($row = e107::getDb()->fetch()){
                $text .= $this->GetBlog($row);
             } else {
-               $text = $this->Message("232".UJ28);
+               $text = $this->Message(UJ28);
             }
          } else {
-            $text = $this->Message("235".UJ28);
+            $text = $this->Message(UJ28);
          }
  
          if ($_msg) {
             $text = $_msg.$text;
 		 }
-		 	 
-         //$user = getx_user_data($row["userjournals_userid"]);
          $user = e107::user($row["userjournals_userid"]);
          $caption = $this->plugPrefs["userjournals_page_title"].UJ25.$user["user_name"];
          return array($caption, $text);
@@ -335,22 +385,17 @@ if (!class_exists("UserJournals")) {
       }
 
       function GetBlog($blog, $limit=false) {
-		 //global $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
-		 global $uj_blog, $uj_categories, $userjournals_shortcodes, $UJ_BLOG, $UJ_BLOG_SHORT;
  
-         $uj_blog = $blog;  
-		 $uj_categories = $this->cats;   
-         
+		 global     $UJ_BLOG, $UJ_BLOG_SHORT;
+
+		 
+		 $blog['uj_categories'] = $this->cats; 
+		 $this->sc->setVars($blog); 
+ 
          if ($limit) {         
-			/* temp fix */
-			 
-            $short_text = e107::getParser()->toHTML($blog["userjournals_entry"], TRUE, 'DESCRIPTION');  
-            $short_text = e107::getParser()->html_truncate($short_text, $limit , "...");
-			$vars['UJ_BLOG_ENTRY_SHORT'] = $short_text;   			 
-            $UJ_BLOG_SHORT2 = e107::getParser()->simpleParse($UJ_BLOG_SHORT, $vars, false);			 
-			$text = e107::getParser()->parseTemplate($UJ_BLOG_SHORT2, FALSE, $userjournals_shortcodes);	 
+			$text = e107::getParser()->parseTemplate($UJ_BLOG_SHORT, FALSE, $this->sc);
          } else {
-            $text = e107::getParser()->parseTemplate($UJ_BLOG, FALSE, $userjournals_shortcodes);
+            $text = e107::getParser()->parseTemplate($UJ_BLOG, FALSE, $this->sc);
          }
          return $text;
       }
@@ -397,24 +442,54 @@ if (!class_exists("UserJournals")) {
                }
                $text .= "</div></td></tr>";
             }
-            if ($this->plugPrefs["userjournals_show_playing"] == 1) {
-               $text .= "<tr><td class='forumheader3'>".UJ41."</td>";
-               $text .= "<td class='forumheader3'>";
-               $text .=  e107::getForm()->text("journal_playing" , $userjournals_playing,  "200", "size=42");
-               $text .= "<br/><span class='smalltext'>".UJ64."</span></td></tr>";
-                        
-            }
-            if ($this->plugPrefs["userjournals_show_mood"] == 1) {
-               $text .= "<tr><td class='forumheader3'>".UJ42."</td><td class='forumheader3'><select class='tbox form-control' name='journal_mood' size='1'>";
-               $keys = array_keys($this->mood);
-               $selected = $userjournals_mood == "" ? " selected='selected'" : "";
-               $text .= "<option value=''$selected></option>";
-               foreach ($keys as $key) {
-                  $selected = $userjournals_mood == $key ? " selected='selected'" : "";
-                  $text .= "<option value='$key'$selected>".$this->mood[$key]."</option>";
-               }
-               $text .= "</select><br/><span class='smalltext'>".UJ65."</span></td></tr>";
-            }
+			if ($this->plugPrefs["userjournals_show_playing"] == 1)
+			{
+				$text .= "<tr><td class='forumheader3'>" . UJ41 . "</td>";
+				$text .= "<td class='forumheader3'>";
+				$text .= e107::getForm()->text("journal_playing", $userjournals_playing, "200", "size=42");
+				$text .= "<br/><span class='smalltext'>" . UJ64 . "</span></td></tr>";
+
+			}
+			if ($this->plugPrefs["userjournals_show_mood"] == 1)
+			{
+
+				$text .= "<tr><td class='forumheader3'>" . UJ42 . "</td><td class='forumheader3'>";
+				$keys = array_keys($this->mood);
+
+				if ($this->plugPrefs["userjournals_show_mood_dropdown"] == 1)
+				{
+
+					$text .= "<select class='tbox form-control' name='journal_mood' size='1'>";
+					foreach ($keys as $file => $key)
+					{
+						$selected = $userjournals_mood == $key ? " selected='selected'" : "";
+						$text .= "<option value='$key'$selected>" . $this->mood[$key] . "</option>";
+					}
+					$text .= "</select>";
+				}
+				else
+				{
+					$jsmiles = e_PLUGIN_ABS . "userjournals/images/";
+
+					foreach ($keys as $file => $key)
+					{
+						if ($key == $userjournals_mood)
+						{
+							$checked = "checked";
+
+						}
+						else
+						{
+							$checked = "";
+						}
+						$file = $this->mood[$key];
+						$text .=
+							"<div class='mood' style='float: left;' ><input type='radio' name='journal_mood' value='$key' $checked> <img src='" . $jsmiles . $key . ".gif' alt= '{$file}' title='{$file}'></div>" ;
+					}
+
+				}
+				$text .= "<br/><span class='smalltext'>" . UJ65 . "</span></td></tr>";
+			}
 			$text .= "<tr><td class='forumheader3'>".UJ7."</td><td class='forumheader3'>";
  
 			//function getTextarea($tatext="", $name="e107xheleprTA", $class="tbox", $rows="15", $cols=false, $width=false, $showBBCodes=false, $showEmotes=false, $resize=false)
@@ -776,13 +851,13 @@ if (!class_exists("UserJournals")) {
       }
 
       function GetReaderMenu() {
-		 global $userjournals_shortcodes, $UJ_MENU_READER, $UJ_RSS;
+		 global  $UJ_MENU_READER, $UJ_RSS;
 		 
 		 	$ns = e107::getRender();
 
 			$uj_categories = $this->cats;
 		 
-            $text = e107::getParser()->parseTemplate($UJ_MENU_READER, FALSE, $userjournals_shortcodes);
+            $text = e107::getParser()->parseTemplate($UJ_MENU_READER, FALSE, $this->sc);
 			 
             if (strlen($text) > 0) {
                $ns->tablerender($this->plugPrefs["userjournals_menu_title"], $text);
@@ -796,18 +871,18 @@ if (!class_exists("UserJournals")) {
        * @param  class an instance of the e107table class
        */
       function GetWriterMenu() {
-		 global   $userjournals_shortcodes, $UJ_MENU_WRITER;
+		 global  $UJ_MENU_WRITER;
  
 		 // Check if user is a UJ writer
          if (check_class( e107::pref($this->pluginName, 'userjournals_writers'))) {
-            $text = e107::getParser()->parseTemplate($UJ_MENU_WRITER, FALSE, $userjournals_shortcodes);
+            $text = e107::getParser()->parseTemplate($UJ_MENU_WRITER, FALSE, $this->sc);
             e107::getRender()->tablerender(UJ39.$this->plugPrefs["userjournals_menu_title"], $text);
          }
       }
 
 	  /* fix: it is menu, use the same shortcode for menus, bullets are part of template */
       function GetCategoriesMenu() {
-         global $userjournals_shortcodes, $uj_category;
+         global   $uj_category;
 
 		 $ns = e107::getRender();
  
@@ -820,7 +895,7 @@ if (!class_exists("UserJournals")) {
 				  $keys = array_keys($this->cats);  
                   foreach ($keys as $key) {    
                      $uj_category = $this->cats[$key];
-					 $text .= e107::getParser()->parseTemplate("{UJ_CATEGORY_MENU_LINK}", FALSE, $userjournals_shortcodes);
+					 $text .= e107::getParser()->parseTemplate("{UJ_CATEGORY_MENU_LINK}", FALSE, $this->sc);
                   }
                   $ns->tablerender($this->plugPrefs["userjournals_cat_menu_title"], $text);
                } else {
@@ -849,39 +924,57 @@ if (!class_exists("UserJournals")) {
 
          if ($msg) {
             $uj_message = $msg;
-            $text = e107::getParser()->parseTemplate($UJ_MESSAGE, TRUE, $userjournals_shortcodes).$text;
+            $text = e107::getParser()->parseTemplate($UJ_MESSAGE, TRUE, $this->sc).$text;
          }
 
          return array($caption, $text);
       }
 
       function AllCategoriesPage() {
-		 global  $uj_categories, $uj_category, $userjournals_shortcodes, $UJ_CATEGORY, $UJ_CATEGORY_LIST;
+		 global  $UJ_CATEGORY, $UJ_CATEGORY_LIST;
 
          $caption = $this->plugPrefs["userjournals_page_title"]." : ".UJ91;
          $keys = array_keys($this->cats);
          $uj_categories = "";
          foreach ($keys as $key) {
-            $uj_category = $this->cats[$key];
-            $uj_categories .= e107::getParser()->parseTemplate($UJ_CATEGORY, FALSE, $userjournals_shortcodes);
-         }
-
-         $text = e107::getParser()->parseTemplate($UJ_CATEGORY_LIST, FALSE, $userjournals_shortcodes);
+			$uj_category = $this->cats[$key];
+			$var['uj_category'] = $uj_category;
+		 
+			$this->sc->setVars($var); 
+			
+			$uj_categories .= e107::getParser()->parseTemplate($UJ_CATEGORY, FALSE, $this->sc);
+	 
+		 }
+		 $var['uj_categories'] = $uj_categories;
+		 $this->sc->setVars($var); 
+         $text = e107::getParser()->parseTemplate($UJ_CATEGORY_LIST, FALSE, $this->sc);
          return array($caption, $text);
       }
 
       function Message($msg, $moretext=false) {
-         global  $uj_message, $uj_message2, $userjournals_shortcodes, $UJ_MESSAGE, $UJ_MESSAGE_EXTRA;
+         global  $uj_message, $uj_message2,  $UJ_MESSAGE, $UJ_MESSAGE_EXTRA;
          $uj_message = $msg;
          $uj_message2 = $moretext;
          $text = "";
-         $text = e107::getParser()->parseTemplate($UJ_MESSAGE, TRUE, $userjournals_shortcodes);
-         $text .= e107::getParser()->parseTemplate($UJ_MESSAGE_EXTRA, TRUE, $userjournals_shortcodes);
+         $text = e107::getParser()->parseTemplate($UJ_MESSAGE, TRUE, $this->sc);
+         $text .= e107::getParser()->parseTemplate($UJ_MESSAGE_EXTRA, TRUE, $this->sc);
          return $text;
       }
 
+	  function startjournal() {
+		
+		if($this->plugTemplates['startjournal']) {
+			
+			$text = e107::getParser()->parseTemplate($this->plugTemplates['startjournal'], TRUE, $this->sc);			 
+		}
+		else {
+			$text =  '';
+		}
+		return $text;
+	 }
  
    }
  
 }
+
  
